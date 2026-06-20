@@ -1,3 +1,4 @@
+// Package cron schedules jobs.
 package cron
 
 import (
@@ -36,15 +37,14 @@ var Tasks = []Task{
 }
 
 var (
-	stopped = zsync.NewAtomicInt(0)
-	started = zsync.NewAtomicInt(0)
+	stopped         = zsync.NewAtomicInt(0)
+	started         = zsync.NewAtomicInt(0)
+	persistInterval = func() *atomic.Int64 {
+		var d atomic.Int64
+		d.Store(int64(10 * time.Second))
+		return &d
+	}()
 )
-
-var persistInterval = func() *atomic.Int64 {
-	var d atomic.Int64
-	d.Store(int64(10 * time.Second))
-	return &d
-}()
 
 func SetPersistInterval(d time.Duration) {
 	persistInterval.Store(int64(d))
@@ -74,18 +74,7 @@ func addJitter(p time.Duration) time.Duration {
 	return p
 }
 
-func getPeriod(id string) time.Duration {
-	if id == "persistAndStat" {
-		return time.Duration(persistInterval.Load())
-	}
-	for _, t := range Tasks {
-		if t.ID() == id {
-			return t.Period
-		}
-	}
-	return 0
-}
-
+// Start running tasks in the background.
 func Start(ctx context.Context) {
 	if started.Value() == 1 {
 		return
@@ -105,14 +94,15 @@ func Start(ctx context.Context) {
 		})
 	}
 
+	// 所有任务统一走同一条调度路径：从 Task.Period 读周期，
+	// 然后加上随机抖动，不再为某个任务保留特例分支。
 	for _, t := range Tasks {
 		go func(t Task) {
 			defer log.Recover(ctx)
 
 			id := t.ID()
 			for {
-				p := getPeriod(id)
-				p = addJitter(p)
+				p := addJitter(t.Period)
 				time.Sleep(p)
 
 				if stopped.Value() == 1 {

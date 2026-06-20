@@ -255,6 +255,6 @@ func oldFilters(ctx context.Context) error {
 }
 
 func sessions(ctx context.Context) error {
-	goatcounter.Sessions.EvictSessions(ctx)
+	goatcounter.Memstore.EvictSessions(ctx)
 	return nil
 }
