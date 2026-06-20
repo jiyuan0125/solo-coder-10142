@@ -94,6 +94,8 @@ func persistAndStat(ctx context.Context) error {
 	}
 	tookMemstore := time.Since(start).Round(time.Millisecond)
 
+	goatcounter.Memstore.PersistSessions(ctx)
+
 	var (
 		startStats = ztime.Now(ctx)
 		grouped    = make(map[goatcounter.SiteID][]goatcounter.Hit)
@@ -254,6 +256,5 @@ func oldFilters(ctx context.Context) error {
 
 func sessions(ctx context.Context) error {
 	goatcounter.Memstore.EvictSessions(ctx)
-	goatcounter.Memstore.StoreSessions(zdb.MustGetDB(ctx))
 	return nil
 }
