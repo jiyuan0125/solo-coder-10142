@@ -1,0 +1,1048 @@
+[__meta__]
+  language = "ro"
+  maintainers = []
+  modified = 2023-05-17
+
+["button/add-new"]
+  default = "Adauga"
+
+["button/add-user"]
+  default = "Adauga utilizator nou"
+
+["button/cfg-dashboard"]
+  default = "Configureaza aspectul"
+
+["button/change"]
+  default = "Schimba"
+
+["button/change-passwd"]
+  default = "Schimba parola"
+
+["button/copy"]
+  default = "Copiere"
+
+["button/delete"]
+  default = "stergere"
+
+["button/delete-account"]
+  default = "Stere contul, toate website-urile, si toate datele"
+
+["button/delete-everything"]
+  default = "Da, sterge tot"
+
+["button/delete-pageviews"]
+
+["button/disable-mfa"]
+  default = "Dezactiveaza MFA"
+
+["button/edit"]
+  default = "Editeaza"
+
+["button/enable-mfa"]
+  default = "Activeaza MFA"
+
+["button/forgot-password"]
+  default = "Ai uitat parola?"
+
+["button/merge"]
+
+["button/preview"]
+
+["button/remove"]
+  default = "Inlatura"
+
+["button/request-reset"]
+  default = "Cere resetarea parolei"
+
+["button/resend-email"]
+  default = "Retrimite email"
+
+["button/reset-defaults"]
+  default = "Reseteaza la implicit"
+
+["button/reset-password"]
+  default = "Reseteaza parola"
+
+["button/run"]
+
+["button/save"]
+  default = "Salveaza"
+
+["button/save-default-view"]
+  default = "Salveaza vedere implicita"
+
+["button/search"]
+
+["button/send-login-url"]
+  default = "Trimite URL de login"
+
+["button/show"]
+
+["button/sign-in"]
+  default = "Logheaza-te"
+
+["button/start-export"]
+  default = "Incepe exportul"
+
+["button/start-import"]
+  default = "Incepe importul"
+
+["button/submit"]
+  default = "Trimite"
+
+["button/upload-ga-import"]
+
+["confirm/delete-user"]
+  default = "Sterge %(email)?"
+
+["dashboard/day-ago"]
+  default = "Acum %(n) zile"
+  zero    = "Acum 0 zile"
+  one     = "Acum o zi"
+  two     = "Acum doua zile"
+  few     = "Acum cateva zile"
+  many    = "Acum multe zile"
+
+["dashboard/loading"]
+
+["dashboard/month-ago"]
+  default = "Acum %(n) luni"
+  zero    = "Acum 0 luni"
+  one     = "Acum o luna"
+  two     = "Acum doua luni"
+  few     = "Acum cateva luni"
+  many    = "Acum multe luni"
+
+["dashboard/nothing-to-display"]
+  default = "Nimic de afisat"
+
+["dashboard/pages/change"]
+
+["dashboard/pages/header"]
+  default = "Pagini"
+
+["dashboard/pages/num-visits"]
+  default = "%(num-visits) din %(total-visits) vizite afisate"
+
+["dashboard/pages/path"]
+  default = "Cale"
+
+["dashboard/pages/title"]
+  default = "Titlu"
+
+["dashboard/pages/visits"]
+  default = "Vizite"
+
+["dashboard/today"]
+  default = "Astazi"
+
+["dashboard/tooltip-event"]
+  default = "%(unique) accesari; %(clicks) total accesari"
+
+["dashboard/totals/header"]
+  default = "Totaluri"
+
+["dashboard/totals/num-visits"]
+  default = "%(num-visits) vizite"
+
+["dashboard/week-ago"]
+  default = "Acum %(n) saptamani"
+  zero    = "Acum 0 saptamani"
+  one     = "Acum o saptamana"
+  two     = "Acum doua saptamani"
+  few     = "Acum cateva saptamani"
+  many    = "Acum multe saptamani"
+
+["dashboard/yesterday"]
+  default = "Ieri"
+
+["data-collect/help/country"]
+  default = "Numele tarii, de exemplu Belgia, Indonezia, etc."
+
+["data-collect/help/hits"]
+
+["data-collect/help/language"]
+
+["data-collect/help/referrer"]
+  default = "Antet referer si parametrii campaniei."
+
+["data-collect/help/region"]
+  default = "Regiume, de exemplu Texas, Bali, etc. Detaliile difera per tara."
+
+["data-collect/help/sessions"]
+  default = "Urmareste vizitatori unici pana la 8 ore; daca aceasta optiune este dezactivata un vizitator care apasa de ex F5 pentru a reincarca pagina va aparea ca 2 vizualizari in loc de 1"
+
+["data-collect/help/size"]
+  default = "Marimea ecranului."
+
+["data-collect/help/user-agent"]
+
+["data-collect/label/country"]
+  default = "Tara"
+
+["data-collect/label/hits"]
+
+["data-collect/label/language"]
+
+["data-collect/label/referrer"]
+  default = "Referrer (locatia web de unde vine utilizatorul)"
+
+["data-collect/label/region"]
+  default = "Regiune"
+
+["data-collect/label/sessions"]
+  default = "Sesiuni"
+
+["data-collect/label/size"]
+  default = "Marime"
+
+["data-collect/label/user-agent"]
+  default = "User-Agent (Browser, sistem si versiune)"
+
+["datepicker/keyboard"]
+  default = "Utilizati sagetile pentru a alege o data"
+
+["datepicker/month-next"]
+  default = "Luna viitoare"
+
+["datepicker/month-prev"]
+  default = "Luna trecuta"
+
+["dont-lock"]
+
+["email-report/daily"]
+
+["email-report/monthly"]
+
+["email-report/never"]
+
+["email-report/two-weeks"]
+
+["email-report/weekly"]
+
+["email/header"]
+  default = "Buna,"
+
+["email/password-reset"]
+  default = """
+Poti face asta aici:
+%(link)
+"""
+
+["email/reset-user-email-subject"]
+  default = "Resetarea parolei pentru %(domain)"
+
+["email/signature"]
+  default = """
+Probleme, intrebari, comentarii, sau altceva de transmis? Raspundeti la acest email.
+
+Multumesc,
+Martin
+"""
+
+["error/address-exists"]
+  default = "adresa %(addr) exista deja"
+
+["error/could-not-read"]
+  default = "Nu se poate procesa ca fisier gzip: %(err)"
+
+["error/date-future"]
+  default = "Aceasta ar fi in viitor"
+
+["error/date-mismatch"]
+  default = "data de sfarsit este inainte de data de start"
+
+["error/date-past"]
+  default = "Aceasta ar fi inainte de crearea site-ului; GoatCounter nu este *atat* de bun ;-)"
+
+["error/email-exists"]
+
+["error/export-expired"]
+  default = "Pare ca nu exista niciun export sau acesta a expirat."
+
+["error/incorrect-password"]
+  default = "Parola curenta este incorecta."
+
+["error/invalid-end-date"]
+  default = "Data de sfarsit invalida: %(date)"
+
+["error/invalid-start-date"]
+  default = "Data de inceput invalida: %(date)"
+
+["error/load-url"]
+  default = "Nu s-a putut incarca %(url): %(error)"
+
+["error/login-invalid"]
+  default = "Login invalid"
+
+["error/login-no-password"]
+  default = "Nu exista nicio parola setata pentru %(email); reseteaza parola"
+
+["error/login-not-found"]
+  default = "Utilizatorul %(email) nu a fost gasit"
+
+["error/login-token-expired"]
+  default = "Nu exista niciun utilizator pentru tokenul furnizat; probabil acesta este expirat sau a fost deja folosit?"
+
+["error/login-wrong-pwd"]
+  default = "Parola gresita pentru %(email)"
+
+["error/merge-self"]
+
+["error/not-found"]
+  default = "Nu s-a gasit"
+
+["error/password-does-not-match"]
+  default = "Confirmarea parolei nu corespunde cu parola."
+
+["error/reset-user-no-account"]
+  default = "Contul: %(email) nu poate accesa acest site."
+
+["error/unknown-activation-token"]
+
+["event"]
+  default = "eveniment"
+
+["forgot-domain-help"]
+  default = "Trimite pe email o lista cu toate domeniile asociate unei adrese de email."
+
+["header/access"]
+  default = "Acces"
+
+["header/add-api-token"]
+
+["header/add-new-user"]
+  default = "Adauga utilizator nou"
+
+["header/allow-access"]
+  default = "Permite acces"
+
+["header/api"]
+  default = "API"
+
+["header/api-tokens"]
+  default = "Tokeni API"
+
+["header/browsers"]
+  default = "Browsere"
+
+["header/change-code"]
+  default = "Schimba codul site-ului"
+
+["header/change-passwd"]
+  default = "Schimba parola"
+
+["header/code"]
+  default = "Cod"
+
+["header/copy-settings"]
+  default = "Copiaza setari"
+
+["header/created-at"]
+  default = "Creat la"
+
+["header/csv-format"]
+
+["header/dashboard"]
+  default = "Panou de control"
+
+["header/data-collection"]
+  default = "Colectarea datelor"
+
+["header/delete-account"]
+  default = "Stergere cont"
+
+["header/deleting"]
+
+["header/domain"]
+  default = "Domeniu"
+
+["header/domain-settings"]
+  default = "Setari domeniu"
+
+["header/edit-user"]
+  default = "Editeaza utilizator %(email)"
+
+["header/email"]
+  default = "Email"
+
+["header/export-or-import"]
+  default = "Export/Import"
+
+["header/export-to-csv"]
+
+["header/export-to-json"]
+
+["header/fewer-number"]
+
+["header/finished"]
+  default = "Terminat"
+
+["header/forgot-domain"]
+  default = "Domeniu uitat"
+
+["header/forgot-password"]
+  default = "Parola uitata"
+
+["header/format"]
+
+["header/hash"]
+  default = "Hash"
+
+["header/import-from-csv"]
+
+["header/import-from-ga"]
+
+["header/import-from-json"]
+
+["header/json-format"]
+
+["header/l10n"]
+  default = "Localizare"
+
+["header/languages"]
+
+["header/last-10-exports"]
+  default = "Ultimele 10 exporturi"
+
+["header/last-used-at"]
+
+["header/locations"]
+  default = "Locatii"
+
+["header/locations-for"]
+  default = "Locatii pentru %(country)"
+
+["header/manage-pageviews"]
+
+["header/merge-account"]
+
+["header/merging-to"]
+
+["header/mfa"]
+  default = "Autentificare multi-factor (MFA)"
+
+["header/n-hits"]
+  default = "# din vizite"
+
+["header/name"]
+  default = "Nume"
+
+["header/other-formats"]
+
+["header/pagination-cursor"]
+  default = "Cursor paginare"
+
+["header/passwd-mfa"]
+  default = "Parola si MFA"
+
+["header/path"]
+  default = "Cale"
+
+["header/permissions"]
+  default = "Permisiuni"
+
+["header/preferences"]
+  default = "Preferinte"
+
+["header/renaming"]
+
+["header/reset-password"]
+  default = "Reseteaza parola pentru %(email) la %(site-name)"
+
+["header/settings"]
+  default = "Setari"
+
+["header/sign-in-at"]
+  default = "Logheaza-te la %(name)"
+
+["header/site-settings"]
+  default = "Setari site"
+
+["header/sites"]
+  default = "Site-uri"
+
+["header/size"]
+  default = "Marime"
+
+["header/sizes"]
+  default = "Marimi"
+
+["header/start-pagination-cursor"]
+
+["header/started"]
+  default = "Inceput"
+
+["header/systems"]
+  default = "Sisteme"
+
+["header/title"]
+  default = "Titlu"
+
+["header/token"]
+  default = "Token"
+
+["header/toprefs"]
+  default = "Top refereri"
+
+["header/tracking"]
+  default = "Tracking"
+
+["header/user-info"]
+  default = "Informatii utilizator"
+
+["header/user-information"]
+  default = "Informatii utilizator"
+
+["header/users"]
+  default = "Utilizatori"
+
+["help/allow-embed"]
+
+["help/allow-visitor-counts"]
+  default = "Vezi %[the documentation] pentru detalii de utilizare."
+
+["help/cfg-dashboard"]
+  default = "Schimba afisarea panoului de control si ordinea."
+
+["help/code-access"]
+  default = "Vei putea accesa site-ul la: https://<em>[my-code]</em>.%(domain)."
+
+["help/configure-dashboard"]
+
+["help/custom-domain"]
+  default = """
+Domeniu custom, de ex. <em>“statistici.exemplu.ro”</em>.
+<strong>Note:</strong> Acesta <em>nu</em> va preveni majoritatea adblocker-elor de la a bloca GoatCounter, este menita doar ca “domeniu vanity”.
+"""
+
+["help/custom-domain-cname"]
+  default = "Seteaza CNAME pentru <code>%(domain)</code> – %[%docs detailed instructions]."
+
+["help/custom-domain-error"]
+  default = """
+Seteaza CNAME pentru <code>%(domain)</code> – %[%docs detailed instructions].
+Verificarile ruleaza la fiecare doua ore.
+"""
+
+["help/custom-domain-verified"]
+  default = "Domeniu verificat si setat (nota: poate dura pana la o ora pentru ca certificatul de functioneze)."
+
+["help/data-retention"]
+  default = "Vizualizarile si toate datele asociate vor fi permanent sterse dupa acest numar de zile. Setat la <code>0</code> nu se sterg niciodata."
+
+["help/datepicker"]
+
+["help/domain-access"]
+  default = "Domeniu pentru accesarea acestui site."
+
+["help/drag-reorder"]
+  default = "Trage pentru a reodona"
+
+["help/email-reports"]
+
+["help/fewer-numbers"]
+
+["help/fewer-numbers-lock"]
+
+["help/for-the-following-countries"]
+  default = "Lista coduri tari (%[list]; utilizeaza cod alpha-2); lasa liber pentru a colecta pentru toate tarile (daca este posibil)."
+
+["help/goatcounter-domain"]
+
+["help/ignore-ips"]
+
+["help/ignore-ips-2"]
+
+["help/locked-until"]
+
+["help/need-cities"]
+
+["help/new-user-email"]
+
+["help/new-user-email-confirm"]
+
+["help/no-undo"]
+
+["help/password-edit"]
+
+["help/password-new-user"]
+
+["help/public"]
+
+["help/save-default-view"]
+
+["help/turing-test"]
+
+["help/your-email"]
+
+["label/24-hour-clock"]
+
+["label/access-to-sites"]
+
+["label/add-new"]
+
+["label/all-sites"]
+
+["label/allow-visitor-counts"]
+
+["label/browser-stats"]
+
+["label/campaigns"]
+
+["label/change-code"]
+
+["label/clear-pageviews"]
+
+["label/code"]
+
+["label/csv-compress-format"]
+
+["label/current-passwd"]
+
+["label/custom-domain"]
+
+["label/dashboard-allow-embed"]
+
+["label/dashboard-public"]
+
+["label/data-retention"]
+
+["label/date-fmt"]
+
+["label/datepicker"]
+
+["label/delete-account-confirmation"]
+
+["label/email"]
+
+["label/email-address"]
+
+["label/email-reports"]
+
+["label/export-from-date"]
+
+["label/fewer-numbers"]
+
+["label/for-following-countries"]
+
+["label/goatcounter-domain"]
+
+["label/ignore-ips"]
+
+["label/lang"]
+
+["label/language-stats"]
+
+["label/loc-stats"]
+
+["label/lock-setting"]
+
+["label/mark-current"]
+
+["label/match-case"]
+
+["label/match-title"]
+
+["label/merge-account-confirmation"]
+
+["label/merge-to"]
+
+["label/mfa-token"]
+
+["label/new-code"]
+
+["label/new-password"]
+
+["label/new-password-confirm"]
+
+["label/pagination-cursor"]
+
+["label/password"]
+
+["label/paths"]
+
+["label/public-anyone"]
+
+["label/public-private"]
+
+["label/public-token"]
+
+["label/secret"]
+
+["label/secret-access"]
+
+["label/secret-token"]
+
+["label/set-default"]
+
+["label/size-desktop"]
+
+["label/size-desktophd"]
+
+["label/size-phones"]
+
+["label/size-stats"]
+
+["label/size-tablets"]
+
+["label/system-stats"]
+
+["label/theme"]
+
+["label/thousand-separator"]
+
+["label/timezone"]
+
+["label/topref"]
+
+["label/total-pageviews"]
+
+["label/turing-test"]
+
+["label/verifictation-token"]
+
+["label/week-start"]
+
+["label/your-email"]
+
+["label/your-site"]
+
+["label/zip-file"]
+
+["link/add-translation"]
+
+["link/api"]
+
+["link/api-docs"]
+
+["link/dashboard"]
+
+["link/generate-random"]
+
+["link/goto-path"]
+
+["link/import"]
+
+["link/manage-pageviews"]
+
+["link/merge-account"]
+
+["link/passwd-mfa"]
+
+["link/preferences"]
+
+["link/rm-account"]
+
+["link/set-from-browser"]
+
+["link/settings"]
+
+["link/show-less"]
+
+["link/show-more"]
+
+["link/sites"]
+
+["link/users"]
+
+["nav-bot/contact"]
+
+["nav-bot/contribute"]
+
+["nav-bot/docs"]
+
+["nav-bot/home"]
+
+["nav-bot/src"]
+
+["nav-dash/back"]
+
+["nav-dash/day"]
+  default = "zi"
+
+["nav-dash/end-date"]
+
+["nav-dash/filter"]
+
+["nav-dash/filter-more-help"]
+
+["nav-dash/filter-tooltip"]
+
+["nav-dash/forward"]
+  default = "inainte"
+
+["nav-dash/half-year"]
+  default = "jumatate de an"
+
+["nav-dash/hour"]
+
+["nav-dash/last"]
+  default = "Ultim(a)"
+
+["nav-dash/month"]
+  default = "luna"
+
+["nav-dash/quarter"]
+  default = "trimestru"
+
+["nav-dash/start-date"]
+
+["nav-dash/view-by"]
+
+["nav-dash/week"]
+  default = "saptamana"
+
+["nav-dash/year"]
+  default = "an"
+
+["nav-fash/filter-less-help"]
+
+["new-paren"]
+
+["no-title"]
+  default = "fara titlu"
+
+["notify/add-one-thing"]
+
+["notify/api-token-created"]
+
+["notify/api-token-removed"]
+
+["notify/disabled-multi-factor-auth"]
+
+["notify/email-already-verified"]
+
+["notify/export-started-in-background"]
+
+["notify/import-ga-okay"]
+
+["notify/import-started-in-background"]
+
+["notify/login-after-password-reset"]
+
+["notify/multi-factor-auth-enabled"]
+
+["notify/need-email-verification-for-api"]
+
+["notify/no-user-for-token"]
+
+["notify/not-found"]
+
+["notify/password-changed"]
+
+["notify/reset-to-default"]
+
+["notify/reset-user-sent"]
+
+["notify/restored-previously-deleted-site"]
+
+["notify/saved"]
+
+["notify/sent-to-email"]
+
+["notify/settings-copied-to-site"]
+
+["notify/site-added"]
+
+["notify/site-removed"]
+
+["notify/started-background-process"]
+
+["notify/user-added"]
+
+["notify/user-removed"]
+
+["notify/users-edited"]
+
+["p/add-goatcounter-to-multiple-websites"]
+
+["p/add-multiple-accounts"]
+
+["p/additional-errors"]
+
+["p/all-sites"]
+
+["p/api-intro"]
+
+["p/change-code-request"]
+
+["p/change-email"]
+
+["p/collect-disabled"]
+
+["p/copy-settings-from-current-site"]
+
+["p/csv-file-format"]
+
+["p/delete-account"]
+
+["p/disable-mfa"]
+
+["p/enable-mfa"]
+
+["p/error"]
+
+["p/export-csv"]
+
+["p/export-from-date"]
+
+["p/export-process"]
+
+["p/have-mfa"]
+
+["p/import-ga"]
+
+["p/json-file-format"]
+
+["p/last-user"]
+
+["p/link-to-batch-rename"]
+
+["p/manage-batch-hits"]
+
+["p/manage-hits"]
+
+["p/merge-account"]
+
+["p/no-data"]
+
+["p/no-matches"]
+
+["p/notify-immediate-change"]
+
+["p/notify-pagination-cursor"]
+
+["p/notify-site-deletion"]
+
+["p/num-accounts"]
+
+["p/remove-site-confirm"]
+
+["p/remove-site-confirm-contact"]
+
+["p/remove-site-confirm-current"]
+
+["p/rm-hits-help"]
+
+["p/rm-pageview-match"]
+
+["p/setting-recovery-disabled-information"]
+
+["p/settings-all-sites"]
+
+["p/site-domain-link-to-page"]
+
+["p/text-data-retention"]
+
+["p/verify-email"]
+
+["page-ranking"]
+
+["scale-y"]
+
+["theme/dark"]
+
+["theme/light"]
+
+["theme/system"]
+
+["tooltip/change-period"]
+
+["top-nav/back"]
+
+["top-nav/dashboard"]
+
+["top-nav/documentation"]
+
+["top-nav/need-js"]
+
+["top-nav/public-link"]
+
+["top-nav/public-time"]
+
+["top-nav/settings"]
+
+["top-nav/sign-in"]
+
+["top-nav/sign-out"]
+
+["top-nav/sites"]
+
+["unknown"]
+
+["validate/bool"]
+
+["validate/color"]
+
+["validate/contains"]
+
+["validate/date"]
+
+["validate/domain"]
+
+["validate/email"]
+
+["validate/exclude"]
+
+["validate/hostname"]
+
+["validate/include"]
+
+["validate/int"]
+
+["validate/ip"]
+
+["validate/ipv4"]
+
+["validate/len-longer"]
+
+["validate/len-shorter"]
+
+["validate/need-one"]
+
+["validate/phone"]
+
+["validate/range-higher"]
+
+["validate/range-lower"]
+
+["validate/required"]
+
+["validate/url"]
+
+["validate/utf8"]
+
+["view not set"]
+
+["widget-setting/help/align"]
+
+["widget-setting/help/chart-style"]
+
+["widget-setting/help/no-events"]
+
+["widget-setting/help/page-size"]
+
+["widget-setting/help/ref-page-size"]
+
+["widget-setting/help/regions"]
+
+["widget-setting/label/align"]
+
+["widget-setting/label/chart-style"]
+
+["widget-setting/label/no-events"]
+
+["widget-setting/label/page-size"]
+
+["widget-setting/label/ref-page-size"]
+
+["widget-setting/label/regions"]
+
+["widget-settings/bar-chart"]
+
+["widget-settings/line-chart"]
+
+["widget-settings/text-chart"]
+
+["y-scale"]

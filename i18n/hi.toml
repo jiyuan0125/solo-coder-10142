@@ -1,0 +1,993 @@
+[__meta__]
+  language = "hi"
+  maintainers = []
+  modified = 2023-05-17
+
+["button/add-new"]
+  default = "नया जोड़ें"
+
+["button/add-user"]
+  default = "नया उपयोगकर्ता जोड़ें"
+
+["button/cfg-dashboard"]
+  default = "डैशबोर्ड लेआउट कॉन्फ़िगर करें"
+
+["button/change"]
+  default = "बदलें"
+
+["button/change-passwd"]
+  default = "पासवर्ड बदलें"
+
+["button/copy"]
+  default = "कॉपी"
+
+["button/delete"]
+  default = "हटाएं"
+
+["button/delete-account"]
+  default = "खाता, सभी साइटें और सभी डेटा हटाएं"
+
+["button/delete-everything"]
+  default = "हां, सब कुछ हटा दें"
+
+["button/delete-pageviews"]
+
+["button/disable-mfa"]
+  default = "MFA अक्षम करें"
+
+["button/edit"]
+  default = "संपादित करें"
+
+["button/enable-mfa"]
+  default = "MFA सक्षम करें"
+
+["button/forgot-password"]
+  default = "क्या आप पासवर्ड भूल गए हैं?"
+
+["button/merge"]
+
+["button/preview"]
+
+["button/remove"]
+  default = "हटाएं"
+
+["button/request-reset"]
+  default = "पासवर्ड रीसेट करने का अनुरोध करें"
+
+["button/resend-email"]
+  default = "ईमेल दुबारा भेजें"
+
+["button/reset-defaults"]
+  default = "डिफ़ॉल्ट पर रीसेट करें"
+
+["button/reset-password"]
+  default = "पासवर्ड रीसेट करें"
+
+["button/run"]
+
+["button/save"]
+  default = "सहेजें"
+
+["button/save-default-view"]
+  default = "डिफ़ॉल्ट दृश्य सहेजें"
+
+["button/search"]
+
+["button/send-login-url"]
+  default = "लॉग इन URL भेजें"
+
+["button/show"]
+
+["button/sign-in"]
+  default = "साइन इन करें"
+
+["button/start-export"]
+  default = "निर्यात शुरू करें"
+
+["button/start-import"]
+  default = "आयात शुरू करें"
+
+["button/submit"]
+  default = "जमा करें"
+
+["button/upload-ga-import"]
+
+["confirm/delete-user"]
+  default = "%(email) को हटाएं?"
+
+["dashboard/day-ago"]
+  default = "%(n) दिन पहले"
+
+["dashboard/loading"]
+
+["dashboard/month-ago"]
+  default = "%(n) महीने पहले"
+
+["dashboard/nothing-to-display"]
+  default = "प्रदर्शित करने के लिए कुछ नहीं"
+
+["dashboard/pages/change"]
+
+["dashboard/pages/header"]
+  default = "पृष्ठ"
+
+["dashboard/pages/num-visits"]
+  default = "%(total-visits) में से %(num-visits) विज़िट दिखाई गईं"
+
+["dashboard/pages/path"]
+  default = "पथ"
+
+["dashboard/pages/title"]
+  default = "नाम"
+
+["dashboard/pages/visits"]
+  default = "विज़िट"
+
+["dashboard/today"]
+  default = "आज"
+
+["dashboard/tooltip-event"]
+  default = "%(unique) क्लिक; %(clicks) कुल क्लिक"
+
+["dashboard/totals/header"]
+  default = "योग"
+
+["dashboard/totals/num-visits"]
+  default = "%(num-visits) विज़िट"
+
+["dashboard/week-ago"]
+  default = "%(n) सप्ताह पहले"
+
+["dashboard/yesterday"]
+  default = "बिता कल"
+
+["data-collect/help/country"]
+  default = "देश का नाम, उदाहरण के लिए भारत, नेपाल, आदि।"
+
+["data-collect/help/hits"]
+
+["data-collect/help/language"]
+  default = "Accept-Language से समर्थित भाषाएं"
+
+["data-collect/help/referrer"]
+  default = "Referer हेडर और अभियान पैरामीटर।"
+
+["data-collect/help/region"]
+  default = "क्षेत्र, उदाहरण के लिए टेक्सास, बाली, आदि। इसके लिए विवरण प्रति देश अलग-अलग हैं।"
+
+["data-collect/help/sessions"]
+  default = "अद्वितीय विज़िट को 8 घंटे तक ट्रैक करें; जैसे यदि आप इसे अक्षम करते हैं तो पृष्ठ को फिर से लोड करने के लिए F5 दबाने पर 1 के बजाय 2 पेज व्यू दिखेंगे"
+
+["data-collect/help/size"]
+  default = "स्क्रीन साईज़"
+
+["data-collect/help/user-agent"]
+
+["data-collect/label/country"]
+  default = "देश"
+
+["data-collect/label/hits"]
+
+["data-collect/label/language"]
+  default = "भाषा"
+
+["data-collect/label/referrer"]
+  default = "रेफरर"
+
+["data-collect/label/region"]
+  default = "क्षेत्र"
+
+["data-collect/label/sessions"]
+  default = "सत्र"
+
+["data-collect/label/size"]
+  default = "आकार"
+
+["data-collect/label/user-agent"]
+  default = "उपयोगकर्ता-एजेंट"
+
+["datepicker/keyboard"]
+  default = "दिनांक चुनने के लिए तीर कुंजियों का उपयोग करें"
+
+["datepicker/month-next"]
+  default = "अगला महीना"
+
+["datepicker/month-prev"]
+  default = "पिछला महीना"
+
+["dont-lock"]
+
+["email-report/daily"]
+
+["email-report/monthly"]
+
+["email-report/never"]
+
+["email-report/two-weeks"]
+
+["email-report/weekly"]
+
+["email/header"]
+  default = "नमस्ते,"
+
+["email/password-reset"]
+  default = """
+किसी ने (उम्मीद है कि आपने) आपके गोटकाउंटर खाते पर पासवर्ड रीसेट करने का अनुरोध किया है।
+
+आप इसे यहाँ से कर सकते हैं:
+%(link)
+"""
+
+["email/reset-user-email-subject"]
+  default = "%(domain) के लिए पासवर्ड रीसेट करें"
+
+["email/signature"]
+  default = """
+मुझे कोई समस्या, प्रश्न, टिप्पणी या कुछ और बताने के लिए बस इस ईमेल का जवाब दें।
+
+आपका आज्ञाकारी,
+मार्टिन
+"""
+
+["error/address-exists"]
+  default = "%(addr) पहले से मौजूद है"
+
+["error/could-not-read"]
+  default = "इसे gzip के रूप में नहीं पढ़ा जा सका: %(err)"
+
+["error/date-future"]
+  default = "यह भविष्य में होगा"
+
+["error/date-mismatch"]
+  default = "समाप्ति तिथि प्रारंभ तिथि से पहले की है"
+
+["error/date-past"]
+  default = "वह साइट के निर्माण से पहले होगा; गोटकाउंटर *उतना* भी अच्छा नहीं है ;-)"
+
+["error/email-exists"]
+
+["error/export-expired"]
+  default = "ऐसा लगता है कि अभी तक कोई निर्यात नहीं हुआ है या निर्यात की समय सीमा समाप्त हो गई है।"
+
+["error/incorrect-password"]
+  default = "वर्तमान पासवर्ड गलत है।"
+
+["error/invalid-end-date"]
+  default = "अमान्य समाप्ति तिथि: %(date)"
+
+["error/invalid-start-date"]
+  default = "अमान्य प्रारंभ तिथि: %(date)"
+
+["error/load-url"]
+  default = "%(url) लोड नहीं हो सका: %(error)"
+
+["error/login-invalid"]
+  default = "अमान्य लॉगिन"
+
+["error/login-no-password"]
+  default = "%(email) के लिए कोई पासवर्ड सेट नहीं है; कृपया इसे रीसेट करें"
+
+["error/login-not-found"]
+  default = "उपयोगकर्ता %(email) नहीं मिला"
+
+["error/login-token-expired"]
+  default = "दिए गए टोकन के लिए उपयोगकर्ता नहीं मिल सका; शायद इसकी समय सीमा समाप्त हो गई है या इसका उपयोग पहले ही किया जा चुका है?"
+
+["error/login-wrong-pwd"]
+  default = "%(email) के लिए पासवर्ड गलत है"
+
+["error/merge-self"]
+
+["error/not-found"]
+  default = "नहीं मिला"
+
+["error/password-does-not-match"]
+  default = "पासवर्ड की पुष्टि मेल नहीं खाती."
+
+["error/reset-user-no-account"]
+  default = "इस साइट पर यह खाता नहीं है: %(email)"
+
+["error/unknown-activation-token"]
+
+["event"]
+
+["forgot-domain-help"]
+  default = "ईमेल से जुड़े सभी डोमेन की सूची ईमेल करें।"
+
+["header/access"]
+
+["header/add-api-token"]
+
+["header/add-new-user"]
+  default = "एक नया उपयोगकर्ता जोड़ें"
+
+["header/allow-access"]
+  default = "उपयोग की अनुमति दें"
+
+["header/api"]
+  default = "एपीआई"
+
+["header/api-tokens"]
+  default = "एपीआई टोकन"
+
+["header/browsers"]
+  default = "ब्राउज़र्स"
+
+["header/change-code"]
+  default = "साइट कोड बदलें"
+
+["header/change-passwd"]
+  default = "पासवर्ड बदलें"
+
+["header/code"]
+  default = "कोड"
+
+["header/copy-settings"]
+  default = "सेटिंग्स कॉपी करें"
+
+["header/created-at"]
+  default = "निर्माण का समय"
+
+["header/csv-format"]
+
+["header/dashboard"]
+  default = "डैशबोर्ड"
+
+["header/data-collection"]
+  default = "डेटा संग्रहण"
+
+["header/delete-account"]
+  default = "खाता हटाएं"
+
+["header/deleting"]
+
+["header/domain"]
+  default = "डोमेन"
+
+["header/domain-settings"]
+  default = "डोमेन सेटिंग्स"
+
+["header/edit-user"]
+  default = "उपयोगकर्ता %(email) संपादित करें"
+
+["header/email"]
+  default = "ईमेल"
+
+["header/export-or-import"]
+  default = "आयात/निर्यात"
+
+["header/export-to-csv"]
+
+["header/export-to-json"]
+
+["header/fewer-number"]
+
+["header/finished"]
+  default = "समाप्त"
+
+["header/forgot-domain"]
+  default = "डोमेन भूल गए"
+
+["header/forgot-password"]
+  default = "पासवर्ड भूल गए"
+
+["header/format"]
+
+["header/hash"]
+  default = "हैश"
+
+["header/import-from-csv"]
+
+["header/import-from-ga"]
+
+["header/import-from-json"]
+
+["header/json-format"]
+
+["header/l10n"]
+  default = "स्थानीयकरण"
+
+["header/languages"]
+  default = "भाषाएं"
+
+["header/last-10-exports"]
+  default = "पिछले 10 निर्यात"
+
+["header/last-used-at"]
+
+["header/locations"]
+  default = "स्थान"
+
+["header/locations-for"]
+  default = "%(country) के लिए स्थान"
+
+["header/manage-pageviews"]
+
+["header/merge-account"]
+
+["header/merging-to"]
+
+["header/mfa"]
+  default = "मल्टी-फैक्टर ऑथेंटिकेशन"
+
+["header/n-hits"]
+  default = "# हिट"
+
+["header/name"]
+  default = "नाम"
+
+["header/other-formats"]
+
+["header/pagination-cursor"]
+  default = "पेजिनेशन कर्सर"
+
+["header/passwd-mfa"]
+  default = "पासवर्ड और MFA"
+
+["header/path"]
+  default = "पथ"
+
+["header/permissions"]
+  default = "अनुमतियां"
+
+["header/preferences"]
+
+["header/renaming"]
+
+["header/reset-password"]
+
+["header/settings"]
+
+["header/sign-in-at"]
+
+["header/site-settings"]
+
+["header/sites"]
+
+["header/size"]
+
+["header/sizes"]
+
+["header/start-pagination-cursor"]
+
+["header/started"]
+
+["header/systems"]
+
+["header/title"]
+
+["header/token"]
+
+["header/toprefs"]
+
+["header/tracking"]
+
+["header/user-info"]
+
+["header/user-information"]
+
+["header/users"]
+
+["help/allow-embed"]
+
+["help/allow-visitor-counts"]
+
+["help/cfg-dashboard"]
+
+["help/code-access"]
+
+["help/configure-dashboard"]
+
+["help/custom-domain"]
+
+["help/custom-domain-cname"]
+
+["help/custom-domain-error"]
+
+["help/custom-domain-verified"]
+
+["help/data-retention"]
+
+["help/datepicker"]
+
+["help/domain-access"]
+
+["help/drag-reorder"]
+
+["help/email-reports"]
+
+["help/fewer-numbers"]
+
+["help/fewer-numbers-lock"]
+
+["help/for-the-following-countries"]
+
+["help/goatcounter-domain"]
+
+["help/ignore-ips"]
+
+["help/ignore-ips-2"]
+
+["help/locked-until"]
+
+["help/need-cities"]
+
+["help/new-user-email"]
+
+["help/new-user-email-confirm"]
+
+["help/no-undo"]
+
+["help/password-edit"]
+
+["help/password-new-user"]
+
+["help/public"]
+
+["help/save-default-view"]
+
+["help/turing-test"]
+
+["help/your-email"]
+
+["label/24-hour-clock"]
+
+["label/access-to-sites"]
+
+["label/add-new"]
+
+["label/all-sites"]
+
+["label/allow-visitor-counts"]
+
+["label/browser-stats"]
+
+["label/campaigns"]
+
+["label/change-code"]
+
+["label/clear-pageviews"]
+
+["label/code"]
+
+["label/csv-compress-format"]
+
+["label/current-passwd"]
+
+["label/custom-domain"]
+
+["label/dashboard-allow-embed"]
+
+["label/dashboard-public"]
+
+["label/data-retention"]
+
+["label/date-fmt"]
+
+["label/datepicker"]
+
+["label/delete-account-confirmation"]
+
+["label/email"]
+
+["label/email-address"]
+
+["label/email-reports"]
+
+["label/export-from-date"]
+
+["label/fewer-numbers"]
+
+["label/for-following-countries"]
+
+["label/goatcounter-domain"]
+
+["label/ignore-ips"]
+
+["label/lang"]
+
+["label/language-stats"]
+
+["label/loc-stats"]
+
+["label/lock-setting"]
+
+["label/mark-current"]
+
+["label/match-case"]
+
+["label/match-title"]
+
+["label/merge-account-confirmation"]
+
+["label/merge-to"]
+
+["label/mfa-token"]
+
+["label/new-code"]
+
+["label/new-password"]
+
+["label/new-password-confirm"]
+
+["label/pagination-cursor"]
+
+["label/password"]
+
+["label/paths"]
+
+["label/public-anyone"]
+
+["label/public-private"]
+
+["label/public-token"]
+
+["label/secret"]
+
+["label/secret-access"]
+
+["label/secret-token"]
+
+["label/set-default"]
+
+["label/size-desktop"]
+
+["label/size-desktophd"]
+
+["label/size-phones"]
+
+["label/size-stats"]
+
+["label/size-tablets"]
+
+["label/system-stats"]
+
+["label/theme"]
+
+["label/thousand-separator"]
+
+["label/timezone"]
+
+["label/topref"]
+
+["label/total-pageviews"]
+
+["label/turing-test"]
+
+["label/verifictation-token"]
+
+["label/week-start"]
+
+["label/your-email"]
+
+["label/your-site"]
+
+["label/zip-file"]
+
+["link/add-translation"]
+
+["link/api"]
+
+["link/api-docs"]
+
+["link/dashboard"]
+
+["link/generate-random"]
+
+["link/goto-path"]
+
+["link/import"]
+
+["link/manage-pageviews"]
+
+["link/merge-account"]
+
+["link/passwd-mfa"]
+
+["link/preferences"]
+
+["link/rm-account"]
+
+["link/set-from-browser"]
+
+["link/settings"]
+
+["link/show-less"]
+
+["link/show-more"]
+
+["link/sites"]
+
+["link/users"]
+
+["nav-bot/contact"]
+
+["nav-bot/contribute"]
+
+["nav-bot/docs"]
+
+["nav-bot/home"]
+
+["nav-bot/src"]
+
+["nav-dash/back"]
+
+["nav-dash/day"]
+
+["nav-dash/end-date"]
+
+["nav-dash/filter"]
+
+["nav-dash/filter-more-help"]
+
+["nav-dash/filter-tooltip"]
+
+["nav-dash/forward"]
+
+["nav-dash/half-year"]
+
+["nav-dash/hour"]
+
+["nav-dash/last"]
+
+["nav-dash/month"]
+
+["nav-dash/quarter"]
+
+["nav-dash/start-date"]
+
+["nav-dash/view-by"]
+
+["nav-dash/week"]
+
+["nav-dash/year"]
+
+["nav-fash/filter-less-help"]
+
+["new-paren"]
+
+["no-title"]
+
+["notify/add-one-thing"]
+
+["notify/api-token-created"]
+
+["notify/api-token-removed"]
+
+["notify/disabled-multi-factor-auth"]
+
+["notify/email-already-verified"]
+
+["notify/export-started-in-background"]
+
+["notify/import-ga-okay"]
+
+["notify/import-started-in-background"]
+
+["notify/login-after-password-reset"]
+
+["notify/multi-factor-auth-enabled"]
+
+["notify/need-email-verification-for-api"]
+
+["notify/no-user-for-token"]
+
+["notify/not-found"]
+
+["notify/password-changed"]
+
+["notify/reset-to-default"]
+
+["notify/reset-user-sent"]
+
+["notify/restored-previously-deleted-site"]
+
+["notify/saved"]
+
+["notify/sent-to-email"]
+
+["notify/settings-copied-to-site"]
+
+["notify/site-added"]
+
+["notify/site-removed"]
+
+["notify/started-background-process"]
+
+["notify/user-added"]
+
+["notify/user-removed"]
+
+["notify/users-edited"]
+
+["p/add-goatcounter-to-multiple-websites"]
+
+["p/add-multiple-accounts"]
+
+["p/additional-errors"]
+
+["p/all-sites"]
+
+["p/api-intro"]
+
+["p/change-code-request"]
+
+["p/change-email"]
+
+["p/collect-disabled"]
+
+["p/copy-settings-from-current-site"]
+
+["p/csv-file-format"]
+
+["p/delete-account"]
+
+["p/disable-mfa"]
+
+["p/enable-mfa"]
+
+["p/error"]
+
+["p/export-csv"]
+
+["p/export-from-date"]
+
+["p/export-process"]
+
+["p/have-mfa"]
+
+["p/import-ga"]
+
+["p/json-file-format"]
+
+["p/last-user"]
+
+["p/link-to-batch-rename"]
+
+["p/manage-batch-hits"]
+
+["p/manage-hits"]
+
+["p/merge-account"]
+
+["p/no-data"]
+
+["p/no-matches"]
+
+["p/notify-immediate-change"]
+
+["p/notify-pagination-cursor"]
+
+["p/notify-site-deletion"]
+
+["p/num-accounts"]
+
+["p/remove-site-confirm"]
+
+["p/remove-site-confirm-contact"]
+
+["p/remove-site-confirm-current"]
+
+["p/rm-hits-help"]
+
+["p/rm-pageview-match"]
+
+["p/setting-recovery-disabled-information"]
+
+["p/settings-all-sites"]
+
+["p/site-domain-link-to-page"]
+
+["p/text-data-retention"]
+
+["p/verify-email"]
+
+["page-ranking"]
+
+["scale-y"]
+
+["theme/dark"]
+
+["theme/light"]
+
+["theme/system"]
+
+["tooltip/change-period"]
+
+["top-nav/back"]
+
+["top-nav/dashboard"]
+
+["top-nav/documentation"]
+
+["top-nav/need-js"]
+
+["top-nav/public-link"]
+
+["top-nav/public-time"]
+
+["top-nav/settings"]
+
+["top-nav/sign-in"]
+
+["top-nav/sign-out"]
+
+["top-nav/sites"]
+
+["unknown"]
+
+["validate/bool"]
+
+["validate/color"]
+
+["validate/contains"]
+
+["validate/date"]
+
+["validate/domain"]
+
+["validate/email"]
+
+["validate/exclude"]
+
+["validate/hostname"]
+
+["validate/include"]
+
+["validate/int"]
+
+["validate/ip"]
+
+["validate/ipv4"]
+
+["validate/len-longer"]
+
+["validate/len-shorter"]
+
+["validate/need-one"]
+
+["validate/phone"]
+
+["validate/range-higher"]
+
+["validate/range-lower"]
+
+["validate/required"]
+
+["validate/url"]
+
+["validate/utf8"]
+
+["view not set"]
+
+["widget-setting/help/align"]
+
+["widget-setting/help/chart-style"]
+
+["widget-setting/help/no-events"]
+
+["widget-setting/help/page-size"]
+
+["widget-setting/help/ref-page-size"]
+
+["widget-setting/help/regions"]
+
+["widget-setting/label/align"]
+
+["widget-setting/label/chart-style"]
+
+["widget-setting/label/no-events"]
+
+["widget-setting/label/page-size"]
+
+["widget-setting/label/ref-page-size"]
+
+["widget-setting/label/regions"]
+
+["widget-settings/bar-chart"]
+
+["widget-settings/line-chart"]
+
+["widget-settings/text-chart"]
+
+["y-scale"]

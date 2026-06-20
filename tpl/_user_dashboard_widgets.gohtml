@@ -1,0 +1,24 @@
+{{range $i, $w := .Widgets}}
+	<div class="widget widget-{{$w.Name}}">
+		<span class="drag-handle" title="{{$.T "help/drag-reorder|Drag to reorder"}}"></span>
+
+		<div class="header">
+			<div>
+				{{if $w.Settings.HasSettings}}<a href="#" class="show-s" title="Settings">⚙️&#xfe0e;</a>{{else}}<span class="show-s"></span>{{end}}
+				<strong class="main">{{$w.Label $.Context}}</strong>
+				{{$s := $w.Settings.Display $.Context $w.Name}}
+				{{if $s}}({{$s}}){{end}}
+			</div>
+			<a href="#" class="dashboard-rm" tabindex="-1">{{$.T "button/remove|Remove"}}</a>
+		</div>
+
+		<div class="widget-settings">
+			{{template "_user_dashboard_widget.gohtml" (map
+				"Context"  $.Context
+				"Validate" $.Validate
+				"Widget"   $w
+				"I"        $i
+			)}}
+		</div>
+	</div>
+{{end}}

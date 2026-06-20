@@ -1,0 +1,7 @@
+{{template "_top.gohtml" .}}
+
+<h1>GoatCounter contact</h1>
+<p>There are a few ways to contact me:</p>
+{{template "_contact.gohtml" (map "v" .Validate "r" "/contact" "a" .Args "Base" .Base)}}
+
+{{template "_bottom.gohtml" .}}

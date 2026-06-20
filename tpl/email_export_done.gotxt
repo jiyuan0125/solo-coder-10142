@@ -1,0 +1,9 @@
+{{template "_email_top.gotxt" .}}
+The GoatCounter export you’ve requested is finished, go here to download it:
+{{.Site.URL .Context}}/settings/export/{{.Export.ID}}
+
+The file size is {{.Export.Size}}M and file integrity hash is {{.Export.Hash}}.
+
+The export will be removed after 24 hours.
+
+{{template "_email_bottom.gotxt" .}}

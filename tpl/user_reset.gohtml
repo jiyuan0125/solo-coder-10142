@@ -1,0 +1,17 @@
+{{template "_backend_top.gohtml" .}}
+
+<h1>{{.T "header/reset-password|Reset password for %(email) at %(site-name)" (map
+	"email"     .User.Email
+	"site-name" (.Site.Display .Context)
+)}}</h1>
+<form method="post" action="{{.Base}}/user/reset/{{.Key}}" class="vertical">
+	<label for="password">{{.T "label/new-password|New password"}}</label>
+	<input type="password" name="password" id="password" autocomplete="new-password" required><br>
+
+	<label for="password2">{{.T "label/new-password-confirm|New password (confirm)"}}</label>
+	<input type="password" name="password2" id="password2" autocomplete="new-password" required><br>
+
+	<button>{{.T "button/reset-password|Reset password"}}</button>
+</form>
+
+{{template "_backend_bottom.gohtml" .}}

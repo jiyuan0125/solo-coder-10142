@@ -1,0 +1,85 @@
+:root {
+    --text:              #fff;
+    --bg:                #000;
+    --header-border:     #888;                             /* Border below some headers */
+    --backdrop:          #0e1011;
+    --target-bg:         #b78c1d;                          /* :target; mostly for headers in the documentation. */
+    --loading-text:      #777;                             /* Little … that appears if something takes more than ~300ms to load */
+
+    --link:              #8edff8;                          /* <a> */
+    --link-hover:        #7acee9;
+
+    --input-text:        #fff;                             /* <input>, <select> */
+    --input-bg:          #000;
+    --input-border:      #444;
+    --input-focus:       #8edff8;                          /* Outline for focused inputs etc. */
+    --fieldset-border:   #666;                             /* Border around setting boxes on the settings page */
+    --form-error-text:   #ff8f8f;
+    --input-error-border: red;
+
+    --btn-text:          #fff;                             /* <button> */
+    --btn-bg:            linear-gradient(#7e7d7d, #404040);
+    --btn-border:        #b0b0b0;                          /* Default border style */
+    --btn-border-outset: #b8b8b8;                          /* Top and left styles for "3D" effect */
+    --btn-hover-bg:      linear-gradient(#656565, #2d2d2d);
+    --btn-active-bg:     linear-gradient(#2d2d2d, #656565);
+
+    --code-text:         #fff;                             /* <code>, <pre>, etc. */
+    --code-bg:           #000;
+    --code-border:       #d5d5d5;                          /* <pre> only */
+
+    --tooltip-text:      #fff;                             /* Tooltips in the charts, some help text, "configure" button */
+    --tooltip-bg:        #060606;
+    --tooltip-border:    #ddd;
+    --tooltip-shadow:    #aaa;
+
+    --chart-line:        #003996;                          /* Charts on the dashboard */
+    --chart-fill:        #003996;
+    --chart-grid:        #555;
+    --hchart-border:     #666;                             /* Colour when you hover the Browsers, Systems, etc. chart bar */
+    --hchart-bar:        #1e2123;
+    --hchart-bar-hover:  #0549b6;
+
+    --nav-bg:            #1b093c;                          /* Navigation at dashboard, settings, and footer */
+    --nav-border:        #3f1887;
+    --footer-shadow:     #09042e;
+    --filter-kw-text:    #ffff60;                          /* Keyword in filter input (at:start, etc.) */
+
+    --info-bg:           #226883;                          /* Flash messages */
+    --info-border:       #242683;
+    --error-bg:          #790707;
+    --error-border:      #b10606;
+
+    --event-bg:          #393774;                          /* "Event" label in paths overview */
+    --pageviews-text:    #7a7a7a;                          /* Grey out "pageviews" in tooltip. */
+
+    --datapicker-border:             #626262;              /* Datepicker on dashboard (non-mobile only). */
+    --datepicker-shadow:             rgba(0,0,0,.5);
+    --datepicker-dayname-text:       #999;
+    --datepicker-day-text:           #ddd;
+    --datepicker-day-bg:             #666;
+    --datepicker-day-hover-bg:       #ff8000;
+    --datepicker-today-text:         #33aaff;
+    --datepicker-selected-shadow:    #178fe5;
+    --datepicker-selected-text:      #33aaff;
+    --datepicker-future-text:        #999;
+    --datepicker-future-bg:          #d5e9f7;
+    --datepicker-outside-month-text: #fff;
+
+    --text-table-even-bg:      #000;                       /* Styles for pages overview with the chart style set to "text" */
+    --text-table-border:       #5e5e5e;
+    --text-table-rank-text:    #a5a5a5;
+
+    --widget-border:           #a4a4a4;                    /* "Widget settings" page */
+    --widget-dragging-border:  yellow;
+    --widget-dragging-bg:      #000;
+    --widget-handle-bg:        #808080;
+    --widget-handle-text:      #bcbcbc;
+    --widget-handle-hover-bg:  #898989;
+
+    --box-bg:                  #666;                       /* Signup box on the homepage, footer */
+    --box-shadow:              #cdc8a4;                    /* box-shadow on most boxes on the homepage, /help page navigation, etc. */
+
+    --plus:                    #008837;                    /* Positive numbers (+5%) */
+    --minus:                   #ac3ad3;                    /* Negative numbers (-5%) */
+}

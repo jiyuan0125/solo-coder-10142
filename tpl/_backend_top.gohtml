@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{{template "_favicon.gohtml" .}}
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{if .GoatcounterCom}}{{.Site.Code}} – {{end}}GoatCounter</title>
+	{{if eq .User.Settings.Theme "light"}}
+		<link rel="stylesheet" href="{{.Static}}/vars.css?v={{.Version}}">
+	{{else if eq .User.Settings.Theme "dark"}}
+		<link rel="stylesheet" href="{{.Static}}/dark.css?v={{.Version}}">
+	{{else}}
+		<link rel="stylesheet" href="{{.Static}}/vars.css?v={{.Version}}">
+		<link rel="stylesheet" href="{{.Static}}/dark.css?v={{.Version}}" media="(prefers-color-scheme: dark)">
+	{{end}}
+	<style>
+		@font-face {
+			font-family: 'Lato'; font-style: normal; font-weight: 400; font-display: fallback;
+			src: local('Lato'), local('Lato Regular'),
+				url('{{.Static}}/fonts/latolatin.woff2') format('woff2');
+		}
+		@font-face {
+			font-family: 'Lato'; font-style: normal; font-weight: 700; font-display: fallback;
+			src: local('Lato Bold'), local('Lato Bold'),
+				url('{{.Static}}/fonts/latolatin-bold.woff2') format('woff2');
+		}
+		@font-face {
+			font-family: 'Lato'; font-style: italic; font-weight: 400; font-display: fallback;
+			src: local('Lato Italic'), local('Lato Italic'),
+				url('{{.Static}}/fonts/latolatin-italic.woff2') format('woff2');
+		}
+	</style>
+	<link rel="stylesheet" href="{{.Static}}/shared.css?v={{.Version}}">
+	<link rel="stylesheet" href="{{.Static}}/pikaday.css?v={{.Version}}">
+	<link rel="stylesheet" href="{{.Static}}/backend.css?v={{.Version}}">
+	<style>{{if not .User.ID}}.logged-in { display: none !important; }{{end}}</style>
+</head>
+
+<body id="page-{{.Path | path_id}}">
+	<noscript>
+		<p>{{.T "top-nav/need-js|GoatCounter requires JavaScript enabled to function well; please allow JavaScript to run from %(domain)." .StaticDomain}}</p>
+		<!--
+		<p><small>For a rationale, see: <a href="https://arp242.net/noscript.html">https://arp242.net/noscript.html</a></small></p>
+		-->
+	</noscript>
+
+	<nav class="center">
+		{{- if .User.ID}}
+			<div>
+				{{if eq .Path "/"}}
+					{{- if gt (len .SubSites) 1 -}}
+						<div id="sites">
+							{{/* z18n: "Site switcher", a list of sites will follow; e.g. "Sites: [site1] [site2]" */ -}}
+							<span class="sites-header">{{.T "top-nav/sites|Sites:"}}</span>
+							<select class="sites-list-select">
+								{{range $i, $s := .SubSites -}}
+									{{if $.GoatcounterCom}}<option{{if eq $s $.Site.Code}} selected{{end}} value="//{{$s}}.{{$.Domain}}{{$.Port}}">{{$s}}</option>
+									{{else}}<option{{if eq $s (deref $.Site.Cname)}} selected{{end}} value="//{{$s}}{{$.Port}}">{{$s}}</option>
+									{{end -}}
+								{{end}}
+							</select>
+							<span class="sites-list">
+								{{range $i, $s := .SubSites -}}
+									{{- if gt $i 0 -}}|{{- end -}}
+									{{if $.GoatcounterCom}} <a{{if eq $s $.Site.Code}} class="active"{{end}} href="//{{$s}}.{{$.Domain}}{{$.Port}}">{{$s}}</a>
+									{{else}} <a{{if eq $s (deref $.Site.Cname)}} class="active"{{end}} href="//{{$s}}{{$.Port}}{{$.Base}}">{{$s}}</a>
+									{{end -}}
+								{{end}}
+							</span>
+						</div>
+					{{- end -}}
+				{{else if has_prefix .Path "/settings/sites/remove/"}}
+					<strong id="back"><a href="{{.Base}}/settings/sites">←&#xfe0e; {{.T "top-nav/back|Back"}}</a></strong>
+				{{else if has_prefix .Path "/settings/purge/confirm"}}
+					<strong id="back"><a href="{{.Base}}/settings/purge">←&#xfe0e; {{.T "top-nav/back|Back"}}</a></strong>
+				{{else if has_prefix .Path "/i18n/"}}
+					<strong id="back"><a href="{{.Base}}/i18n">←&#xfe0e; {{.T "top-nav/back|Back"}}</a></strong>
+				{{else if has_prefix .Path "/bosmang/"}}
+					<strong id="back"><a href="{{.Base}}/settings/server">←&#xfe0e; {{.T "top-nav/back|Back"}}</a></strong>
+				{{else}}
+					<strong id="back"><a href="{{.Base}}/">←&#xfe0e; {{.T "top-nav/dashboard|Dashboard"}}</a></strong>
+				{{end}}
+			</div>
+			<div id="usermenu">
+				<a {{if eq .Path "/help"}}class="active" {{end}}href="{{.Base}}/help">{{.T "top-nav/documentation|Help"}}</a> |
+				{{if .User.AccessSettings}}<a {{if has_prefix .Path "/settings"}}class="active" {{end}}href="{{.Base}}/settings">{{.T "top-nav/settings|Settings"}}</a> |{{end}}
+				<a {{if has_prefix .Path "/user"}}class="active" {{end}}href="{{.Base}}/user">{{.User.EmailShort}}</a> |
+				<form method="post" action="{{.Base}}/user/logout">
+					<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+					<button class="link">{{.T "top-nav/sign-out|Sign out"}}</button>
+				</form>
+			</div>
+		{{else if and (.Site.Settings.IsPublic) (not .HideUI)}}
+			<div style="margin-left: .3em;">
+				{{if .Site.LinkDomain -}}
+					{{.T "top-nav/public-link|Analytics for %(domain)."
+						(tag "a" (printf `target="_blank" rel="noopener" href="%s"` (.Site.LinkDomainURL true)) .Site.LinkDomain)
+					}}
+				{{end}}
+				{{.T "top-nav/public-time|The public view is updated once an hour; all times are in %(timezone-name) (%(timezone-offset))." (map
+					"timezone-name"   (join .User.Settings.Timezone.Abbr ", ")
+					"timezone-offset" .User.Settings.Timezone.OffsetDisplay
+				)}}
+			</div>
+			<div id="signin"><a href="{{.Base}}/user/new">{{.T "top-nav/sign-in|Sign in"}}</a></div>
+		{{- end -}}
+	</nav>
+
+	<div class="page">
+	{{- if .Flash}}<div class="flash flash-{{.Flash.Level}}">{{.Flash.Message}}</div>{{end -}}
+
+	{{if and .User.ID (before .Site.CreatedAt "2024-04-07")}}
+		<div class="flash flash-i onetime onetime-dark">
+			The default theme colours are now set from your system; you can change it back to the
+			previous by changing it in <a href="{{.Base}}/user/pref#section-email-reports">your user settings</a>
+			– <a href="" class="close">don’t show again</a>
+		</div>
+	{{end}}

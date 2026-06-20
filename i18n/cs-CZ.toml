@@ -1,0 +1,1043 @@
+[__meta__]
+  language = "cs"
+  maintainers = []
+  modified = 2026-01-13
+
+["button/add-new"]
+  default = "Přidat nový"
+
+["button/add-user"]
+  default = "Přidat nového uživatele"
+
+["button/cfg-dashboard"]
+  default = "Nastavit layout dashboardu"
+
+["button/change"]
+  default = "Změnit"
+
+["button/change-passwd"]
+  default = "Změnit heslo"
+
+["button/copy"]
+  default = "Zkopírovat"
+
+["button/delete"]
+  default = "smazat"
+
+["button/delete-account"]
+  default = "Smazat účet, všechny stránky a všechna data"
+
+["button/delete-everything"]
+  default = "Ano, smazat vše"
+
+["button/delete-pageviews"]
+  default = "Smazat zobrazení"
+
+["button/disable-mfa"]
+  default = "Vypnout MFA"
+
+["button/edit"]
+  default = "Upravit"
+
+["button/enable-mfa"]
+  default = "Zapnout MFA"
+
+["button/forgot-password"]
+  default = "Zapomenuté heslo?"
+
+["button/merge"]
+  default = "Sloučit"
+
+["button/preview"]
+
+["button/remove"]
+  default = "Odebrat"
+
+["button/request-reset"]
+  default = "Požádat o změnu hesla"
+
+["button/resend-email"]
+  default = "Odeslat email znovu"
+
+["button/reset-defaults"]
+  default = "Obnovit původní"
+
+["button/reset-password"]
+  default = "Reset hesla"
+
+["button/run"]
+
+["button/save"]
+  default = "Uložit"
+
+["button/save-default-view"]
+  default = "Uložit výchozí zobrazení"
+
+["button/search"]
+  default = "Hledat"
+
+["button/send-login-url"]
+  default = "Odeslat přihlašovací URL"
+
+["button/show"]
+
+["button/sign-in"]
+  default = "Přihlásit se"
+
+["button/start-export"]
+  default = "Exportovat"
+
+["button/start-import"]
+  default = "Importovat"
+
+["button/submit"]
+  default = "Potvrdit"
+
+["button/upload-ga-import"]
+  default = "Nahrát"
+
+["confirm/delete-user"]
+  default = "Smazat %(email)?"
+
+["dashboard/day-ago"]
+  default = "Výchozí"
+  zero    = "Nula dní zpět"
+  one     = "Jeden den zpět"
+  two     = "Dva dny zpět"
+  few     = "Pár dní zpět"
+  many    = "Mnoho dní zpět"
+
+["dashboard/loading"]
+  default = "Načítání..."
+
+["dashboard/month-ago"]
+  default = "Výchozí"
+  zero    = "Nula měsíců zpět"
+  one     = "Jeden měsíc zpět"
+  two     = "Dva měsíce zpět"
+  few     = "Pár měsíců zpět"
+  many    = "Mnoho měsíců zpět"
+
+["dashboard/nothing-to-display"]
+  default = "Nic k zobrazení"
+
+["dashboard/pages/change"]
+  default = "Změnit"
+
+["dashboard/pages/header"]
+  default = "Stránky"
+
+["dashboard/pages/num-visits"]
+  default = "%(num-visits) návstěv z celkových %(total-visits) zobrazeno"
+
+["dashboard/pages/path"]
+  default = "Cesta"
+
+["dashboard/pages/title"]
+  default = "Titulek"
+
+["dashboard/pages/visits"]
+  default = "Návštěvy"
+
+["dashboard/today"]
+  default = "Dnes"
+
+["dashboard/tooltip-event"]
+  default = "%(unique) kliknutí; %(clicks) celkově kliknutí"
+
+["dashboard/totals/header"]
+  default = "Celkově"
+
+["dashboard/totals/num-visits"]
+  default = "%(num-visits) návstěv"
+
+["dashboard/week-ago"]
+  default = "týdnů zpět"
+  zero    = "týdnů zpět"
+  one     = "týden zpět"
+  two     = "týdny zpět"
+  few     = "týdnů zpět"
+  many    = "týdnů zpět"
+
+["dashboard/yesterday"]
+  default = "Včera"
+
+["data-collect/help/country"]
+  default = "Název státu, například Belgie, Indonesie, etc."
+
+["data-collect/help/hits"]
+
+["data-collect/help/language"]
+  default = "Podporované jazyky z hlavičky Accept-Language"
+
+["data-collect/help/referrer"]
+  default = "Hlavička referer a parametry kampaní"
+
+["data-collect/help/region"]
+
+["data-collect/help/sessions"]
+
+["data-collect/help/size"]
+  default = "Velikost obrazovky."
+
+["data-collect/help/user-agent"]
+
+["data-collect/label/country"]
+  default = "Země"
+
+["data-collect/label/hits"]
+
+["data-collect/label/language"]
+  default = "Jazyk"
+
+["data-collect/label/referrer"]
+  default = "Referer"
+
+["data-collect/label/region"]
+  default = "Oblast"
+
+["data-collect/label/sessions"]
+  default = "Sezení"
+
+["data-collect/label/size"]
+  default = "Velikost"
+
+["data-collect/label/user-agent"]
+  default = "User-agent"
+
+["datepicker/keyboard"]
+  default = "Použijte šipky k výběru data"
+
+["datepicker/month-next"]
+  default = "Další měsíc"
+
+["datepicker/month-prev"]
+  default = "Předchozí měsíc"
+
+["dont-lock"]
+
+["email-report/daily"]
+  default = "Denně"
+
+["email-report/monthly"]
+  default = "Měsíčně"
+
+["email-report/never"]
+  default = "Nikdy"
+
+["email-report/two-weeks"]
+  default = "Každý druhý týden"
+
+["email-report/weekly"]
+  default = "Týdně"
+
+["email/header"]
+  default = "Ahoj,"
+
+["email/password-reset"]
+  default = """
+Někdo (snad ty) požádal o reset hesla na tvém GoatCounter účtu.
+
+Můžeš to udělat zde:
+"""
+
+["email/reset-user-email-subject"]
+  default = "Reset hesla pro %(domain)"
+
+["email/signature"]
+  default = """
+Nějaké problémy, otázky, komentáře nebo cokoliv dalšího? Odpověz na tento email.
+
+Měj se,
+Martin
+"""
+
+["error/address-exists"]
+  default = "%(addr) už existuje"
+
+["error/could-not-read"]
+
+["error/date-future"]
+
+["error/date-mismatch"]
+
+["error/date-past"]
+
+["error/email-exists"]
+
+["error/export-expired"]
+
+["error/incorrect-password"]
+
+["error/invalid-end-date"]
+
+["error/invalid-start-date"]
+
+["error/load-url"]
+
+["error/login-invalid"]
+
+["error/login-no-password"]
+
+["error/login-not-found"]
+
+["error/login-token-expired"]
+
+["error/login-wrong-pwd"]
+
+["error/merge-self"]
+
+["error/not-found"]
+  default = "Nenalezeno"
+
+["error/password-does-not-match"]
+  default = "Hesla se neshodují."
+
+["error/reset-user-no-account"]
+
+["error/unknown-activation-token"]
+  default = "Neznámý aktivační token"
+
+["event"]
+  default = "událost"
+
+["forgot-domain-help"]
+
+["header/access"]
+  default = "Přístup"
+
+["header/add-api-token"]
+  default = "Přidat nový API token"
+
+["header/add-new-user"]
+  default = "Přidat nového uživatele"
+
+["header/allow-access"]
+  default = "Povolit přístup"
+
+["header/api"]
+  default = "API"
+
+["header/api-tokens"]
+  default = "API tokeny"
+
+["header/browsers"]
+  default = "Prohlížeče"
+
+["header/change-code"]
+
+["header/change-passwd"]
+  default = "Změnit heslo"
+
+["header/code"]
+
+["header/copy-settings"]
+  default = "Zkopírovat nastavení"
+
+["header/created-at"]
+
+["header/csv-format"]
+
+["header/dashboard"]
+  default = "Ovládací panel"
+
+["header/data-collection"]
+
+["header/delete-account"]
+  default = "Odstranit účet"
+
+["header/deleting"]
+
+["header/domain"]
+  default = "Doména"
+
+["header/domain-settings"]
+  default = "Nastavení domény"
+
+["header/edit-user"]
+
+["header/email"]
+  default = "Email"
+
+["header/export-or-import"]
+  default = "Export/Import"
+
+["header/export-to-csv"]
+  default = "Exportovat do CSV"
+
+["header/export-to-json"]
+
+["header/fewer-number"]
+
+["header/finished"]
+
+["header/forgot-domain"]
+
+["header/forgot-password"]
+
+["header/format"]
+
+["header/hash"]
+
+["header/import-from-csv"]
+
+["header/import-from-ga"]
+
+["header/import-from-json"]
+
+["header/json-format"]
+
+["header/l10n"]
+
+["header/languages"]
+  default = "Jazyky"
+
+["header/last-10-exports"]
+  default = "Posledních 10 exportů"
+
+["header/last-used-at"]
+
+["header/locations"]
+  default = "Lokace"
+
+["header/locations-for"]
+
+["header/manage-pageviews"]
+
+["header/merge-account"]
+
+["header/merging-to"]
+
+["header/mfa"]
+
+["header/n-hits"]
+
+["header/name"]
+  default = "Jméno"
+
+["header/other-formats"]
+
+["header/pagination-cursor"]
+
+["header/passwd-mfa"]
+
+["header/path"]
+  default = "Cesta"
+
+["header/permissions"]
+
+["header/preferences"]
+
+["header/renaming"]
+
+["header/reset-password"]
+
+["header/settings"]
+  default = "Nastavení"
+
+["header/sign-in-at"]
+
+["header/site-settings"]
+
+["header/sites"]
+
+["header/size"]
+  default = "Velikost"
+
+["header/sizes"]
+  default = "Velikosti"
+
+["header/start-pagination-cursor"]
+
+["header/started"]
+
+["header/systems"]
+
+["header/title"]
+
+["header/token"]
+
+["header/toprefs"]
+
+["header/tracking"]
+
+["header/user-info"]
+
+["header/user-information"]
+
+["header/users"]
+  default = "Uživatelé"
+
+["help/allow-embed"]
+
+["help/allow-visitor-counts"]
+
+["help/cfg-dashboard"]
+
+["help/code-access"]
+
+["help/configure-dashboard"]
+  default = "Přizpůsobit Ovládací panel"
+
+["help/custom-domain"]
+
+["help/custom-domain-cname"]
+
+["help/custom-domain-error"]
+
+["help/custom-domain-verified"]
+
+["help/data-retention"]
+
+["help/datepicker"]
+
+["help/domain-access"]
+
+["help/drag-reorder"]
+
+["help/email-reports"]
+
+["help/fewer-numbers"]
+
+["help/fewer-numbers-lock"]
+
+["help/for-the-following-countries"]
+
+["help/goatcounter-domain"]
+
+["help/ignore-ips"]
+
+["help/ignore-ips-2"]
+
+["help/locked-until"]
+
+["help/need-cities"]
+
+["help/new-user-email"]
+
+["help/new-user-email-confirm"]
+
+["help/no-undo"]
+
+["help/password-edit"]
+
+["help/password-new-user"]
+
+["help/public"]
+
+["help/save-default-view"]
+
+["help/turing-test"]
+  default = "Jen malá pojistka, že jsi člověk :-)"
+
+["help/your-email"]
+  default = "Novou emailovou adresu budeš muset znovu ověřit."
+
+["label/24-hour-clock"]
+  default = "24-hodinový formát (13:00)"
+
+["label/access-to-sites"]
+
+["label/add-new"]
+  default = "Přidat nový"
+
+["label/all-sites"]
+
+["label/allow-visitor-counts"]
+
+["label/browser-stats"]
+
+["label/campaigns"]
+
+["label/change-code"]
+
+["label/clear-pageviews"]
+
+["label/code"]
+
+["label/csv-compress-format"]
+
+["label/current-passwd"]
+  default = "Současné heslo"
+
+["label/custom-domain"]
+  default = "Vlastní doména"
+
+["label/dashboard-allow-embed"]
+
+["label/dashboard-public"]
+
+["label/data-retention"]
+
+["label/date-fmt"]
+  default = "Formát datumu"
+
+["label/datepicker"]
+
+["label/delete-account-confirmation"]
+
+["label/email"]
+  default = "Email"
+
+["label/email-address"]
+  default = "Emailové adresy"
+
+["label/email-reports"]
+
+["label/export-from-date"]
+
+["label/fewer-numbers"]
+
+["label/for-following-countries"]
+
+["label/goatcounter-domain"]
+
+["label/ignore-ips"]
+
+["label/lang"]
+
+["label/language-stats"]
+
+["label/loc-stats"]
+
+["label/lock-setting"]
+
+["label/mark-current"]
+
+["label/match-case"]
+
+["label/match-title"]
+
+["label/merge-account-confirmation"]
+
+["label/merge-to"]
+
+["label/mfa-token"]
+
+["label/new-code"]
+
+["label/new-password"]
+  default = "Nové heslo"
+
+["label/new-password-confirm"]
+  default = "Nové heslo (potvrď)"
+
+["label/pagination-cursor"]
+
+["label/password"]
+  default = "Heslo"
+
+["label/paths"]
+
+["label/public-anyone"]
+
+["label/public-private"]
+
+["label/public-token"]
+
+["label/secret"]
+
+["label/secret-access"]
+
+["label/secret-token"]
+
+["label/set-default"]
+
+["label/size-desktop"]
+
+["label/size-desktophd"]
+
+["label/size-phones"]
+
+["label/size-stats"]
+
+["label/size-tablets"]
+
+["label/system-stats"]
+
+["label/theme"]
+  default = "Šablona"
+
+["label/thousand-separator"]
+
+["label/timezone"]
+  default = "Časové pásmo"
+
+["label/topref"]
+
+["label/total-pageviews"]
+
+["label/turing-test"]
+  default = "Napiš 9"
+
+["label/verifictation-token"]
+
+["label/week-start"]
+  default = "Týden začíná nedělí"
+
+["label/your-email"]
+  default = "Tvůj email"
+
+["label/your-site"]
+  default = "Tvůj web"
+
+["label/zip-file"]
+
+["link/add-translation"]
+  default = "Přidat nebo upravit překlady"
+
+["link/api"]
+  default = "API"
+
+["link/api-docs"]
+  default = "API dokumentace"
+
+["link/dashboard"]
+  default = "Ovládací panel"
+
+["link/generate-random"]
+
+["link/goto-path"]
+
+["link/import"]
+  default = "Import/Export"
+
+["link/manage-pageviews"]
+
+["link/merge-account"]
+
+["link/passwd-mfa"]
+  default = "Heslo & MFA"
+
+["link/preferences"]
+
+["link/rm-account"]
+  default = "Odstranit účet"
+
+["link/set-from-browser"]
+
+["link/settings"]
+  default = "nastavení"
+
+["link/show-less"]
+  default = "(zobrazit méně)"
+
+["link/show-more"]
+  default = "Zobrazit více"
+
+["link/sites"]
+
+["link/users"]
+
+["nav-bot/contact"]
+  default = "Kontakt"
+
+["nav-bot/contribute"]
+
+["nav-bot/docs"]
+  default = "Dokumentace"
+
+["nav-bot/home"]
+  default = "Domů"
+
+["nav-bot/src"]
+  default = "Zdrojový kód"
+
+["nav-dash/back"]
+
+["nav-dash/day"]
+  default = "den"
+
+["nav-dash/end-date"]
+
+["nav-dash/filter"]
+
+["nav-dash/filter-more-help"]
+
+["nav-dash/filter-tooltip"]
+
+["nav-dash/forward"]
+
+["nav-dash/half-year"]
+  default = "Pololetí"
+
+["nav-dash/hour"]
+  default = "hodina"
+
+["nav-dash/last"]
+
+["nav-dash/month"]
+  default = "měsíc"
+
+["nav-dash/quarter"]
+  default = "čtvrtletí"
+
+["nav-dash/start-date"]
+
+["nav-dash/view-by"]
+
+["nav-dash/week"]
+  default = "týden"
+
+["nav-dash/year"]
+  default = "rok"
+
+["nav-fash/filter-less-help"]
+
+["new-paren"]
+  default = "(nový)"
+
+["no-title"]
+
+["notify/add-one-thing"]
+
+["notify/api-token-created"]
+  default = "API token vytvořen."
+
+["notify/api-token-removed"]
+  default = "API token odstraněn."
+
+["notify/disabled-multi-factor-auth"]
+
+["notify/email-already-verified"]
+
+["notify/export-started-in-background"]
+
+["notify/import-ga-okay"]
+
+["notify/import-started-in-background"]
+
+["notify/login-after-password-reset"]
+
+["notify/multi-factor-auth-enabled"]
+
+["notify/need-email-verification-for-api"]
+
+["notify/no-user-for-token"]
+
+["notify/not-found"]
+
+["notify/password-changed"]
+
+["notify/reset-to-default"]
+
+["notify/reset-user-sent"]
+
+["notify/restored-previously-deleted-site"]
+
+["notify/saved"]
+  default = "Uloženo!"
+
+["notify/sent-to-email"]
+
+["notify/settings-copied-to-site"]
+
+["notify/site-added"]
+
+["notify/site-removed"]
+
+["notify/started-background-process"]
+
+["notify/user-added"]
+
+["notify/user-removed"]
+
+["notify/users-edited"]
+
+["p/add-goatcounter-to-multiple-websites"]
+
+["p/add-multiple-accounts"]
+
+["p/additional-errors"]
+
+["p/all-sites"]
+
+["p/api-intro"]
+
+["p/change-code-request"]
+
+["p/change-email"]
+
+["p/collect-disabled"]
+
+["p/copy-settings-from-current-site"]
+
+["p/csv-file-format"]
+
+["p/delete-account"]
+
+["p/disable-mfa"]
+
+["p/enable-mfa"]
+
+["p/error"]
+
+["p/export-csv"]
+
+["p/export-from-date"]
+
+["p/export-process"]
+
+["p/have-mfa"]
+
+["p/import-ga"]
+
+["p/json-file-format"]
+
+["p/last-user"]
+
+["p/link-to-batch-rename"]
+
+["p/manage-batch-hits"]
+
+["p/manage-hits"]
+
+["p/merge-account"]
+
+["p/no-data"]
+
+["p/no-matches"]
+
+["p/notify-immediate-change"]
+
+["p/notify-pagination-cursor"]
+
+["p/notify-site-deletion"]
+
+["p/num-accounts"]
+
+["p/remove-site-confirm"]
+
+["p/remove-site-confirm-contact"]
+
+["p/remove-site-confirm-current"]
+
+["p/rm-hits-help"]
+
+["p/rm-pageview-match"]
+
+["p/setting-recovery-disabled-information"]
+
+["p/settings-all-sites"]
+
+["p/site-domain-link-to-page"]
+
+["p/text-data-retention"]
+
+["p/verify-email"]
+
+["page-ranking"]
+
+["scale-y"]
+
+["theme/dark"]
+  default = "Tmavý"
+
+["theme/light"]
+  default = "Světlý"
+
+["theme/system"]
+  default = "Dle systému"
+
+["tooltip/change-period"]
+
+["top-nav/back"]
+
+["top-nav/dashboard"]
+
+["top-nav/documentation"]
+
+["top-nav/need-js"]
+
+["top-nav/public-link"]
+
+["top-nav/public-time"]
+
+["top-nav/settings"]
+
+["top-nav/sign-in"]
+  default = "Přihlásit se"
+
+["top-nav/sign-out"]
+  default = "Odhlásit se"
+
+["top-nav/sites"]
+
+["unknown"]
+  default = "(neznámá)"
+
+["validate/bool"]
+
+["validate/color"]
+
+["validate/contains"]
+
+["validate/date"]
+
+["validate/domain"]
+
+["validate/email"]
+
+["validate/exclude"]
+
+["validate/hostname"]
+
+["validate/include"]
+
+["validate/int"]
+
+["validate/ip"]
+
+["validate/ipv4"]
+
+["validate/len-longer"]
+
+["validate/len-shorter"]
+
+["validate/need-one"]
+
+["validate/phone"]
+
+["validate/range-higher"]
+
+["validate/range-lower"]
+
+["validate/required"]
+
+["validate/url"]
+
+["validate/utf8"]
+
+["view not set"]
+
+["widget-setting/help/align"]
+
+["widget-setting/help/chart-style"]
+
+["widget-setting/help/no-events"]
+
+["widget-setting/help/page-size"]
+
+["widget-setting/help/ref-page-size"]
+
+["widget-setting/help/regions"]
+
+["widget-setting/label/align"]
+
+["widget-setting/label/chart-style"]
+
+["widget-setting/label/no-events"]
+
+["widget-setting/label/page-size"]
+
+["widget-setting/label/ref-page-size"]
+
+["widget-setting/label/regions"]
+
+["widget-settings/bar-chart"]
+
+["widget-settings/line-chart"]
+
+["widget-settings/text-chart"]
+
+["y-scale"]

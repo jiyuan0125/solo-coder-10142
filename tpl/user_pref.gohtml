@@ -1,0 +1,164 @@
+{{template "_backend_top.gohtml" .}}
+{{template "_user_nav.gohtml" .}}
+
+<h2 id="setting">{{.T "header/preferences|Preferences"}}</h2>
+<div class="form-wrap">
+	<form method="post" action="{{.Base}}/user/pref" class="vertical">
+		<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+
+		<fieldset>
+			<legend>{{.T "header/user-info|User information"}}</legend>
+
+			<label for="user.email">{{.T "label/your-email|Your email"}}</label>
+
+			<input type="text" name="user.email" id="user.email" value="{{.User.Email}}">
+			{{validate "email" .Validate}}
+			<span>{{.T "help/your-email|You will need to re-verify the new address if you change it."}}</span>
+		</fieldset>
+
+		<fieldset id="section-i18n">
+			<legend>{{.T "header/l10n|Localisation"}}</legend>
+
+			<label for="language">{{.T "label/lang|Language"}}</label>
+			<select name="user.settings.language" id="language">
+				<option {{option_value .User.Settings.Language "id-ID"}}>Bahasa Indonesia</option>
+				<option {{option_value .User.Settings.Language "cs-CZ"}}>Čeština</option>
+				<option {{option_value .User.Settings.Language "de-DE"}}>Deutsch</option>
+				<option {{option_value .User.Settings.Language "en-GB"}}>English</option>
+				<option {{option_value .User.Settings.Language "es-CL"}}>Español (Chile)</option>
+				<option {{option_value .User.Settings.Language "fr-FR"}}>Français</option>
+				<option {{option_value .User.Settings.Language "it-IT"}}>Italiano</option>
+				<option {{option_value .User.Settings.Language "nl-NL"}}>Nederlands</option>
+				<option {{option_value .User.Settings.Language "no-NO"}}>Norsk</option>
+				<option {{option_value .User.Settings.Language "pl-PL"}}>Polski</option>
+				<option {{option_value .User.Settings.Language "pt-BR"}}>Português (Brasil)</option>
+				<option {{option_value .User.Settings.Language "ro-RO"}}>Română</option>
+				<option {{option_value .User.Settings.Language "sk-SK"}}>Slovenčina</option>
+				<option {{option_value .User.Settings.Language "fi-FI"}}>Suomi</option>
+				<option {{option_value .User.Settings.Language "tr-TR"}}>Türkçe</option>
+				<option {{option_value .User.Settings.Language "bg-BG"}}>Български</option>
+				<option {{option_value .User.Settings.Language "ru-RU"}}>Русский</option>
+				<option {{option_value .User.Settings.Language "uk-UA"}}>Українська</option>
+				<option {{option_value .User.Settings.Language "hi"   }}>हिन्दी</option>
+				<option {{option_value .User.Settings.Language "th-TH"}}>ไทย</option>
+				<option {{option_value .User.Settings.Language "zh-CN"}}>简体中文</option>
+				<option {{option_value .User.Settings.Language "zh-TW"}}>中国</option>
+				<option {{option_value .User.Settings.Language "ja-JP"}}>日本語</option>
+				<option {{option_value .User.Settings.Language "ko-KR"}}>한국어</option>
+			</select>
+			{{validate "settings.language" .Validate}}
+			<span><a href="{{.Base}}/i18n">{{.T "link/add-translation|Add or update translations"}}</a></span>
+
+			<label for="date_format">{{.T "label/date-fmt|Date format"}}</label>
+			<select name="user.settings.date_format" id="date_format">
+				<option {{option_value .User.Settings.DateFormat "2006-01-02"}}>year-month-day (2006-01-02)</option>
+				<option {{option_value .User.Settings.DateFormat "02-01-2006"}}>day-month-year (02-01-2006)</option>
+				<option {{option_value .User.Settings.DateFormat "01/02/06"}}>month/day/year (01/02/06)</option>
+				<option {{option_value .User.Settings.DateFormat "2 Jan ’06"}}>Short text (2 Jan '06)</option>
+				<option {{option_value .User.Settings.DateFormat "Mon Jan 2 2006"}}>Long text (Mon Jan 2 2006)</option>
+			</select>
+
+			<label>{{checkbox .User.Settings.TwentyFourHours "user.settings.twenty_four_hours"}}
+				{{.T "label/24-hour-clock|24-hour clock (13:00)"}}</label>
+
+			<label>{{checkbox .User.Settings.SundayStartsWeek "user.settings.sunday_starts_week"}}
+				{{.T "label/week-start|Week starts on Sunday"}}</label>
+
+			<label for="number_format">{{.T "label/thousand-separator|Thousands separator"}}</label>
+			<select name="user.settings.number_format" id="number_format">
+				<option {{option_value (printf "%d" .User.Settings.NumberFormat) "8239"}}>Thin space (42 123)</option>
+				<option {{option_value (printf "%d" .User.Settings.NumberFormat) "160"}}>Space (42 123)</option>
+				<option {{option_value (printf "%d" .User.Settings.NumberFormat) "44"}}>Comma (42,123)</option>
+				<option {{option_value (printf "%d" .User.Settings.NumberFormat) "46"}}>Dot (42.123)</option>
+				<option {{option_value (printf "%d" .User.Settings.NumberFormat) "39"}}>Apostrophe (42'123)</option>
+				<option {{option_value (printf "%d" .User.Settings.NumberFormat) "1"}}>None (42123)</option>
+			</select>
+			{{validate "settings.number_format" .Validate}}
+
+			<label for="timezone">{{.T "label/timezone|Timezone"}}</label>
+			<select name="user.settings.timezone" id="timezone">
+				<option {{option_value $.User.Settings.Timezone.String ".UTC"}}>UTC</option>
+				{{range $tz := .Timezones}}<option {{option_value $.User.Settings.Timezone.String $tz.String}}>{{$tz.Display}}</option>
+				{{end}}
+			</select>
+			{{validate "settings.timezone" .Validate}}
+			<span><a href="#_" id="set-local-tz">{{.T "link/set-from-browser|Set from browser"}}</a></span>
+		</fieldset>
+
+		<fieldset id="section-fewer-numbers">
+			<legend>{{.T "header/fewer-number|Show fewer numbers"}}</legend>
+
+			<label>
+				<input type="checkbox" name="user.settings.fewer_numbers" id="user.settings.fewer_numbers"
+					{{if .User.Settings.FewerNumbers}}checked{{end}}
+					{{if .FewerNumbersLocked}}disabled{{end}}
+				>
+				<input type="hidden" name="user.settings.fewer_numbers" value="{{if .FewerNumbersLocked}}on{{else}}off{{end}}">
+				{{.T "label/fewer-numbers|Show fewer numbers"}}
+			</label>
+				<span>{{.T `help/fewer-numbers|
+					Don’t show numbers on the dashboard. This is intended to
+					still give a reasonably useful overview of what happens on
+					your site but prevent an “obsession” over the exact number
+					of visitors and stats.
+				`}}</span>
+
+			<div id="lock-settings">
+				{{if .FewerNumbersLocked}}
+					<br>
+					{{.T "help/locked-until|Locked until %(date)"
+						(.User.Settings.FewerNumbersLockUntil.Format .User.Settings.DateFormat)}}
+				{{else}}
+					<label for="fewer-numbers-lock">{{.T "label/lock-setting|Lock setting"}}</label>
+					<select id="fewer-numbers-lock" name="fewer_numbers_lock">
+						<option value="">{{.T "dont-lock|Don’t lock"}}</option>
+						<option value="week">{{ucfirst (printf "%s" (.T "nav-dash/week|week"))}}</option>
+						<option value="month">{{ucfirst (printf "%s" (.T "nav-dash/month|month"))}}</option>
+					</select>
+					<span>{{.T "help/fewer-numbers-lock|You won’t be able to disable this setting for the given time period."}}</span>
+				{{end}}
+			</div>
+		</fieldset>
+
+		<fieldset id="section-email-reports">
+			<legend>{{.T "header/preferences|Preferences"}}</legend>
+
+			<label for="theme">{{.T "label/theme|Theme"}}</label>
+			<select id="theme" name="theme">
+				<option {{option_value .User.Settings.Theme ""}}>{{.T "theme/system|Use system setting"}}</option>
+				<option {{option_value .User.Settings.Theme "light"}}>{{.T "theme/light|Light"}}</option>
+				<option {{option_value .User.Settings.Theme "dark"}}>{{.T "theme/dark|Dark"}}</option>
+			</select>
+
+			<label for="email_reports">{{.T "label/email-reports|Send email reports"}}</label>
+			<select name="user.settings.email_reports" id="email_reports">
+				<option {{option_value (str .User.Settings.EmailReports) "0"}}>{{.T "email-report/never|Never"}}</option>
+				<option {{option_value (str .User.Settings.EmailReports) "1"}}>{{.T "email-report/daily|Daily"}}</option>
+				<option {{option_value (str .User.Settings.EmailReports) "2"}}>{{.T "email-report/weekly|Weekly"}}</option>
+				<option {{option_value (str .User.Settings.EmailReports) "3"}}>{{.T "email-report/two-weeks|Every two weeks"}}</option>
+				<option {{option_value (str .User.Settings.EmailReports) "4"}}>{{.T "email-report/monthly|Monthly"}}</option>
+			</select>
+			<span>{{.T "help/email-reports|Reports are sent on the first day of the new period (e.g. first day of the month)."}}</span>
+
+			<label>{{checkbox .User.Settings.Datepicker "user.settings.datepicker"}}
+				{{.T "label/datepicker|Enable custom datepicker"}}</label>
+			<span>{{.T "help/datepicker|GoatCounter uses a custom JavaScript datepicker on desktop systems as that often gives a better experience. You can disable it to use the native datepicker. On mobile systems it will always use the native datepicker."}}</span>
+		</fieldset>
+
+		<div class="flex-break"></div>
+
+		<button type="submit">{{.T "button/save|Save"}}</button>
+		{{if .User.AccessSettings}}
+			<label style="margin-left: 3em"><input type="checkbox" name="set_site">
+				{{.T "label/set-default|Also set as default for new users and the public view (if enabled)."}}</label>
+		{{end}}
+	</form>
+
+	{{if has_errors .Validate}}
+		<div class="flash flash-e"
+			style="position: fixed; bottom: 0; right: 0; min-width: 20em; z-index: 5; text-align: left;">
+		{{.T "p/additional-errors|Additional errors"}}:{{.Validate.HTML}}</div>
+	{{end}}
+</div>
+
+{{template "_backend_bottom.gohtml" .}}
