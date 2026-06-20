@@ -1,10 +1,10 @@
-// Package cron schedules jobs.
 package cron
 
 import (
 	"context"
 	"math/rand/v2"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"zgo.at/goatcounter/v2/pkg/bgrun"
@@ -40,7 +40,14 @@ var (
 	started = zsync.NewAtomicInt(0)
 )
 
+var persistInterval = func() *atomic.Int64 {
+	var d atomic.Int64
+	d.Store(int64(10 * time.Second))
+	return &d
+}()
+
 func SetPersistInterval(d time.Duration) {
+	persistInterval.Store(int64(d))
 	for i, t := range Tasks {
 		if t.ID() == "persistAndStat" {
 			Tasks[i].Period = d
@@ -50,17 +57,12 @@ func SetPersistInterval(d time.Duration) {
 }
 
 func addJitter(p time.Duration) time.Duration {
-	var m time.Duration
-	switch {
-	case p >= time.Hour*12:
+	m := p / 50
+	if p >= time.Hour*12 {
 		m = p / 100
-	case p <= time.Minute:
-		m = p / 5
-		if m < 2*time.Second {
-			m = 2 * time.Second
-		}
-	default:
-		m = p / 50
+	}
+	if p <= time.Minute {
+		m = p / 10
 	}
 	if m > 0 {
 		rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
@@ -72,21 +74,18 @@ func addJitter(p time.Duration) time.Duration {
 	return p
 }
 
-func initialDelay(p time.Duration) time.Duration {
-	if p <= 0 {
-		return 0
+func getPeriod(id string) time.Duration {
+	if id == "persistAndStat" {
+		return time.Duration(persistInterval.Load())
 	}
-	max := p / 4
-	if max < 1*time.Second {
-		max = 1 * time.Second
+	for _, t := range Tasks {
+		if t.ID() == id {
+			return t.Period
+		}
 	}
-	if max > 30*time.Second {
-		max = 30 * time.Second
-	}
-	return time.Duration(rand.Int64N(int64(max)))
+	return 0
 }
 
-// Start running tasks in the background.
 func Start(ctx context.Context) {
 	if started.Value() == 1 {
 		return
@@ -111,14 +110,9 @@ func Start(ctx context.Context) {
 			defer log.Recover(ctx)
 
 			id := t.ID()
-			time.Sleep(initialDelay(t.Period))
-
 			for {
-				if stopped.Value() == 1 {
-					return
-				}
-
-				p := addJitter(t.Period)
+				p := getPeriod(id)
+				p = addJitter(p)
 				time.Sleep(p)
 
 				if stopped.Value() == 1 {
