@@ -5,7 +5,6 @@ import (
 	"context"
 	"math/rand/v2"
 	"strings"
-	"sync/atomic"
 	"time"
 
 	"zgo.at/goatcounter/v2/pkg/bgrun"
@@ -37,17 +36,11 @@ var Tasks = []Task{
 }
 
 var (
-	stopped         = zsync.NewAtomicInt(0)
-	started         = zsync.NewAtomicInt(0)
-	persistInterval = func() *atomic.Int64 {
-		var d atomic.Int64
-		d.Store(int64(10 * time.Second))
-		return &d
-	}()
+	stopped = zsync.NewAtomicInt(0)
+	started = zsync.NewAtomicInt(0)
 )
 
 func SetPersistInterval(d time.Duration) {
-	persistInterval.Store(int64(d))
 	for i, t := range Tasks {
 		if t.ID() == "persistAndStat" {
 			Tasks[i].Period = d
@@ -57,12 +50,17 @@ func SetPersistInterval(d time.Duration) {
 }
 
 func addJitter(p time.Duration) time.Duration {
-	m := p / 50
-	if p >= time.Hour*12 {
+	var m time.Duration
+	switch {
+	case p >= time.Hour*12:
 		m = p / 100
-	}
-	if p <= time.Minute {
-		m = p / 10
+	case p <= time.Minute:
+		m = p / 5
+		if m < 2*time.Second {
+			m = 2 * time.Second
+		}
+	default:
+		m = p / 50
 	}
 	if m > 0 {
 		rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
@@ -72,6 +70,20 @@ func addJitter(p time.Duration) time.Duration {
 		p += rnd
 	}
 	return p
+}
+
+func initialDelay(p time.Duration) time.Duration {
+	if p <= 0 {
+		return 0
+	}
+	max := p / 4
+	if max < 1*time.Second {
+		max = 1 * time.Second
+	}
+	if max > 30*time.Second {
+		max = 30 * time.Second
+	}
+	return time.Duration(rand.Int64N(int64(max)))
 }
 
 // Start running tasks in the background.
@@ -99,14 +111,14 @@ func Start(ctx context.Context) {
 			defer log.Recover(ctx)
 
 			id := t.ID()
+			time.Sleep(initialDelay(t.Period))
+
 			for {
-				var p time.Duration
-				if id == "persistAndStat" {
-					p = time.Duration(persistInterval.Load())
-				} else {
-					p = t.Period
+				if stopped.Value() == 1 {
+					return
 				}
-				p = addJitter(p)
+
+				p := addJitter(t.Period)
 				time.Sleep(p)
 
 				if stopped.Value() == 1 {
