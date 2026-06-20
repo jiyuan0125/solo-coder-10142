@@ -322,7 +322,7 @@ func TestBackendCountSessions(t *testing.T) {
 	checkSess(append(hits1, hits2...), want)
 
 	// Should still use the same sessions.
-	goatcounter.SessionTime = 1 * time.Second
+	goatcounter.Memstore.SetSessionTime(1 * time.Second)
 	goatcounter.Memstore.EvictSessions(ctx)
 	send(ctx1, ua1)
 	send(ctx2, ua1)

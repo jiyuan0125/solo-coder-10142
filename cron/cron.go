@@ -15,25 +15,35 @@ import (
 )
 
 type Task struct {
-	Desc   string
-	Fun    func(context.Context) error
-	Period time.Duration
+	Desc       string
+	Fun        func(context.Context) error
+	Period     time.Duration
+	PeriodFunc func() time.Duration
 }
 
 func (t Task) ID() string {
 	return strings.Replace(zruntime.FuncName(t.Fun), "zgo.at/goatcounter/v2/cron.", "", 1)
 }
 
+func (t Task) period() time.Duration {
+	if t.PeriodFunc != nil {
+		return t.PeriodFunc()
+	}
+	return t.Period
+}
+
 var Tasks = []Task{
-	{"vacuum pageviews (data retention)", dataRetention, 24 * time.Hour},
-	{"vacuum pageviews (old bot)", oldBot, 24 * time.Hour},
-	{"vacuum soft-deleted sites", vacuumDeleted, 12 * time.Hour},
-	{"renew ACME certs", renewACME, 2 * time.Hour},
-	{"rm old exports", oldExports, 1 * time.Hour},
-	{"send email reports", EmailReports, 1 * time.Hour},
-	{"cycle sessions", sessions, 1 * time.Minute},
-	{"persist hits", persistAndStat, time.Duration(persistInterval.Load())},
-	{"vacuum filters", oldFilters, 1 * time.Hour},
+	{"vacuum pageviews (data retention)", dataRetention, 24 * time.Hour, nil},
+	{"vacuum pageviews (old bot)", oldBot, 24 * time.Hour, nil},
+	{"vacuum soft-deleted sites", vacuumDeleted, 12 * time.Hour, nil},
+	{"renew ACME certs", renewACME, 2 * time.Hour, nil},
+	{"rm old exports", oldExports, 1 * time.Hour, nil},
+	{"send email reports", EmailReports, 1 * time.Hour, nil},
+	{"cycle sessions", sessions, 1 * time.Minute, nil},
+	{"persist hits", persistAndStat, 0, func() time.Duration {
+		return time.Duration(persistInterval.Load())
+	}},
+	{"vacuum filters", oldFilters, 1 * time.Hour, nil},
 }
 
 var (
@@ -48,6 +58,21 @@ var (
 
 func SetPersistInterval(d time.Duration) {
 	persistInterval.Store(int64(d))
+}
+
+func addJitter(p time.Duration) time.Duration {
+	m := p / 50
+	if p >= time.Hour*12 {
+		m = p / 100
+	}
+	if m < time.Second {
+		m = time.Second
+	}
+	rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
+	if rand.IntN(2) == 1 {
+		rnd = -rnd
+	}
+	return p + rnd
 }
 
 // Start running tasks in the background.
@@ -76,25 +101,7 @@ func Start(ctx context.Context) {
 
 			id := t.ID()
 			for {
-				if id == "persistAndStat" {
-					time.Sleep(time.Duration(persistInterval.Load()))
-				} else {
-					p := t.Period
-					// Add some random jitter to prevent jobs from running at
-					// the same time.
-					if t.Period > time.Minute {
-						m := t.Period / 50
-						if t.Period >= time.Hour*12 {
-							m = t.Period / 100
-						}
-						rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
-						if rand.IntN(2) == 1 {
-							rnd = -rnd
-						}
-						p += rnd
-					}
-					time.Sleep(p)
-				}
+				time.Sleep(addJitter(t.period()))
 				if stopped.Value() == 1 {
 					return
 				}
