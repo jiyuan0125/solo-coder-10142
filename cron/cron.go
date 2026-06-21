@@ -15,9 +15,17 @@ import (
 )
 
 type Task struct {
-	Desc   string
-	Fun    func(context.Context) error
-	Period time.Duration
+	Desc       string
+	Fun        func(context.Context) error
+	Period     time.Duration
+	PeriodFunc func() time.Duration
+}
+
+func (t Task) GetPeriod() time.Duration {
+	if t.PeriodFunc != nil {
+		return t.PeriodFunc()
+	}
+	return t.Period
 }
 
 func (t Task) ID() string {
@@ -25,15 +33,15 @@ func (t Task) ID() string {
 }
 
 var Tasks = []Task{
-	{"vacuum pageviews (data retention)", dataRetention, 24 * time.Hour},
-	{"vacuum pageviews (old bot)", oldBot, 24 * time.Hour},
-	{"vacuum soft-deleted sites", vacuumDeleted, 12 * time.Hour},
-	{"renew ACME certs", renewACME, 2 * time.Hour},
-	{"rm old exports", oldExports, 1 * time.Hour},
-	{"send email reports", EmailReports, 1 * time.Hour},
-	{"cycle sessions", sessions, 1 * time.Minute},
-	{"persist hits", persistAndStat, time.Duration(persistInterval.Load())},
-	{"vacuum filters", oldFilters, 1 * time.Hour},
+	{"vacuum pageviews (data retention)", dataRetention, 24 * time.Hour, nil},
+	{"vacuum pageviews (old bot)", oldBot, 24 * time.Hour, nil},
+	{"vacuum soft-deleted sites", vacuumDeleted, 12 * time.Hour, nil},
+	{"renew ACME certs", renewACME, 2 * time.Hour, nil},
+	{"rm old exports", oldExports, 1 * time.Hour, nil},
+	{"send email reports", EmailReports, 1 * time.Hour, nil},
+	{"cycle sessions", sessions, 1 * time.Minute, nil},
+	{"persist hits", persistAndStat, 0, func() time.Duration { return time.Duration(persistInterval.Load()) }},
+	{"vacuum filters", oldFilters, 1 * time.Hour, nil},
 }
 
 var (
@@ -76,12 +84,7 @@ func Start(ctx context.Context) {
 
 			id := t.ID()
 			for {
-				var p time.Duration
-				if id == "persistAndStat" {
-					p = time.Duration(persistInterval.Load())
-				} else {
-					p = t.Period
-				}
+				p := t.GetPeriod()
 
 				// Add some random jitter to prevent jobs from running at
 				// the same time.

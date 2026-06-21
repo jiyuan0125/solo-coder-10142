@@ -8,6 +8,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"zgo.at/goatcounter/v2/pkg/log"
@@ -22,6 +23,7 @@ import (
 var (
 	TestSession    = zint.Uint128{0x11223344556677, 0x8899aabbccddeeff}
 	TestSeqSession = zint.Uint128{TestSession[0], TestSession[1] + 1}
+	testSeqCounter uint64
 )
 
 var (
@@ -47,15 +49,17 @@ type ms struct {
 	hitMu sync.RWMutex
 	hits  []Hit
 
-	sessionMu   sync.RWMutex
-	sessions    map[sessionKey]*sessionEntry
+	sessionMu    sync.RWMutex
+	sessions     map[sessionKey]*sessionEntry
 	sessionsByID map[zint.Uint128]*sessionEntry
 
 	sessionTime time.Duration
 	testHook    bool
 }
 
-var Memstore ms
+var Memstore = ms{
+	sessionTime: 8 * time.Hour,
+}
 
 func (m *ms) Reset() {
 	m.sessionMu.Lock()
@@ -63,7 +67,7 @@ func (m *ms) Reset() {
 
 	m.sessions = make(map[sessionKey]*sessionEntry)
 	m.sessionsByID = make(map[zint.Uint128]*sessionEntry)
-	TestSeqSession = zint.Uint128{TestSession[0], TestSession[1] + 1}
+	atomic.StoreUint64(&testSeqCounter, 1)
 }
 
 func (m *ms) SetSessionTime(d time.Duration) {
@@ -319,17 +323,11 @@ func (m *ms) processHit(ctx context.Context, h *Hit) bool {
 	return true
 }
 
-var SessionTime = 8 * time.Hour
-
 func (m *ms) EvictSessions(ctx context.Context) {
 	m.sessionMu.Lock()
 	defer m.sessionMu.Unlock()
 
-	st := m.sessionTime
-	if st == 0 {
-		st = SessionTime
-	}
-	ev := ztime.Now(ctx).Add(-st).Unix()
+	ev := ztime.Now(ctx).Add(-m.sessionTime).Unix()
 	for id, entry := range m.sessionsByID {
 		if entry.LastSeen > ev {
 			continue
@@ -347,8 +345,7 @@ func (m *ms) EvictSessions(ctx context.Context) {
 
 func (m *ms) SessionID() zint.Uint128 {
 	if m.testHook {
-		TestSeqSession[1]++
-		return TestSeqSession
+		return zint.Uint128{TestSession[0], TestSession[1] + atomic.AddUint64(&testSeqCounter, 1)}
 	}
 	return UUID()
 }
