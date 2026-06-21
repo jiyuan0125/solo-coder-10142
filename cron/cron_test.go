@@ -57,30 +57,92 @@ func TestSetPersistIntervalUpdatesPeriod(t *testing.T) {
 	}
 }
 
-func TestJitterProducesDiverseIntervals(t *testing.T) {
-	base := 1 * time.Hour
+func applyJitter(p time.Duration) time.Duration {
+	if p > 0 {
+		m := p / 50
+		if p >= time.Hour*12 {
+			m = p / 100
+		}
+		if m < time.Millisecond {
+			m = time.Millisecond
+		}
+		rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Millisecond)
+		if rand.IntN(2) == 1 {
+			rnd = -rnd
+		}
+		p += rnd
+	}
+	return p
+}
+
+func TestJitterPersistAndStat10s(t *testing.T) {
+	base := 10 * time.Second
 	intervals := make(map[time.Duration]int)
 
-	// Simulate the jitter logic in cron.Start()
-	for range 200 {
-		p := base
-		if p > time.Minute {
-			m := p / 50
-			rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
-			if rand.IntN(2) == 1 {
-				rnd = -rnd
-			}
-			p += rnd
-		}
+	for range 100 {
+		p := applyJitter(base)
 		intervals[p]++
 	}
 
-	// With jitter, we should see multiple distinct interval values
-	if len(intervals) < 10 {
-		t.Errorf("jitter not diverse enough: got %d distinct intervals from 200 samples, want >= 10", len(intervals))
+	if len(intervals) < 2 {
+		t.Errorf("10s persist interval should have at least 2 distinct values from 100 samples, got %d", len(intervals))
 	}
 
-	// All intervals should stay within ±2% of the base (m = base/50 = 2%)
+	maxJitter := base / 50
+	for p := range intervals {
+		diff := p - base
+		if diff < 0 {
+			diff = -diff
+		}
+		if diff > maxJitter {
+			t.Errorf("interval %s deviates too far from base %s (max diff %s)", p, base, maxJitter)
+		}
+	}
+
+	t.Logf("10s persist: %d distinct intervals from 100 samples", len(intervals))
+	for p, c := range intervals {
+		t.Logf("  %s: %d times", p, c)
+	}
+}
+
+func TestJitterOneMinute(t *testing.T) {
+	base := 1 * time.Minute
+	intervals := make(map[time.Duration]int)
+
+	for range 200 {
+		p := applyJitter(base)
+		intervals[p]++
+	}
+
+	if len(intervals) < 5 {
+		t.Errorf("1m interval should have at least 5 distinct values from 200 samples, got %d", len(intervals))
+	}
+
+	maxJitter := base / 50
+	for p := range intervals {
+		diff := p - base
+		if diff < 0 {
+			diff = -diff
+		}
+		if diff > maxJitter {
+			t.Errorf("interval %s deviates too far from base %s (max diff %s)", p, base, maxJitter)
+		}
+	}
+}
+
+func TestJitterLongPeriod(t *testing.T) {
+	base := 1 * time.Hour
+	intervals := make(map[time.Duration]int)
+
+	for range 200 {
+		p := applyJitter(base)
+		intervals[p]++
+	}
+
+	if len(intervals) < 10 {
+		t.Errorf("1h interval should have at least 10 distinct values from 200 samples, got %d", len(intervals))
+	}
+
 	maxJitter := base / 50
 	for p := range intervals {
 		diff := p - base

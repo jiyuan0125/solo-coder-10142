@@ -88,12 +88,15 @@ func Start(ctx context.Context) {
 
 				// Add some random jitter to prevent jobs from running at
 				// the same time.
-				if p > time.Minute {
+				if p > 0 {
 					m := p / 50
 					if p >= time.Hour*12 {
 						m = p / 100
 					}
-					rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
+					if m < time.Millisecond {
+						m = time.Millisecond
+					}
+					rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Millisecond)
 					if rand.IntN(2) == 1 {
 						rnd = -rnd
 					}
