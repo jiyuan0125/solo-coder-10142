@@ -236,5 +236,3 @@ func (m *ms) processHit(ctx context.Context, h *Hit) bool {
 	}
 	return true
 }
-
-var SessionTime = 8 * time.Hour
