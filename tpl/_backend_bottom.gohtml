@@ -1,0 +1,27 @@
+	</div> {{- /* .page */}}
+
+	{{if or (.User.ID) (not .HideUI)}}
+		{{template "_bottom_links.gohtml" .}}
+	{{end}}
+
+	<span id="js-settings"
+		data-offset="{{.User.Settings.Timezone.Offset}}"
+		data-first-hit-at="{{.Site.FirstHitAt.Unix}}"
+		data-websocket="{{.Websocket}}"
+		data-goatcounter-com="{{.GoatcounterCom}}"
+		data-dev="{{.Dev}}"
+		{{if .Base}}data-base-path="{{.Base}}"{{end}}
+		{{if .User.ID}}data-csrf="{{.User.CSRFToken}}"{{end}}
+	>
+		{{- .User.Settings.String | unsafe_js -}}
+	</span>
+	<span id="js-i18n">{{.JSTranslations | json}}</span>
+
+	<script crossorigin="anonymous" src="{{.Static}}/jquery.js?v={{.Version}}"></script>
+	<script crossorigin="anonymous" src="{{.Static}}/pikaday.js?v={{.Version}}"></script>
+	<script crossorigin="anonymous" src="{{.Static}}/charty.js?v={{.Version}}"></script>
+	<script crossorigin="anonymous" src="{{.Static}}/helper.js?v={{.Version}}"></script>
+	<script crossorigin="anonymous" src="{{.Static}}/dashboard.js?v={{.Version}}"></script>
+	<script crossorigin="anonymous" src="{{.Static}}/backend.js?v={{.Version}}"></script>
+</body>
+</html>

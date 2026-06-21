@@ -1,0 +1,85 @@
+{{template "_backend_top.gohtml" .}}
+
+<h1>Background jobs</h1>
+
+<h2>Registered tasks</h2>
+<table>
+<thead><tr>
+	<th>Run every</th>
+	<th>ID</th>
+	<th>Description</th>
+	<th></th>
+</tr></thead>
+<tbody>
+	{{range $i, $t := .Tasks}}
+		<tr>
+			<td>{{$t.Period}}</td>
+			<td>{{$t.ID}}</td>
+			<td>{{$t.Desc}}</td>
+			<td><form method="post" action="{{$.Base}}/bosmang/bgrun/{{$i}}">
+				<input type="hidden" name="csrf" value="{{$.User.CSRFToken}}">
+				<button class="link" title="Run the task now; this won't reset the timer for the scheduled task">Run now</button>
+			</form></td>
+		</tr>
+	{{end}}
+</tbody>
+</table>
+
+<h2>Currently running</h2>
+<table>
+<thead><tr>
+	<th>Job</th>
+	<th>Started from</th>
+	<th>Started at</th>
+</tr></thead>
+<tbody>
+	{{range $j := .Jobs}}
+		<tr>
+			<td>{{$j.Task}}</td>
+			<td>{{$j.From}}</td>
+			<td>{{$j.Started | ago}} ago</td>
+		</tr>
+	{{else}}
+		<tr><td colspan="4">No jobs currently running.</td></tr>
+	{{end}}
+</tbody>
+</table>
+
+<h2>Performance</h2>
+{{range $k, $v := .Metrics}}
+<pre>{{$k}} (over last {{$v.Len}} invocations)
+	Total:  {{$v.Sum | round_duration}}
+	Min:    {{$v.Min | round_duration}}
+	Max:    {{$v.Max | round_duration}}
+	Median: {{$v.Median | round_duration}}
+	Mean:   {{$v.Mean | round_duration}}
+    {{distribute_durations $v 4}}</pre>
+{{end}}
+
+
+<h2>History</h2>
+<p>Last 100, most recent first.</p>
+
+<table>
+<thead><tr>
+	<th>Job</th>
+	<th>Started from</th>
+	<th>Started at</th>
+	<th>Run time</th>
+</tr></thead>
+<tbody>
+	{{range $i, $_ := .History}}
+		{{$j := index $.History (int (sub (len $.History) $i 1))}}
+		<tr>
+			<td>{{$j.Task}}</td>
+			<td>{{$j.From}}</td>
+			<td>{{$j.Started.Format "2006-01-02 15:04:05"}}</td>
+			<td>{{round_duration $j.Took}}</td>
+		</tr>
+	{{else}}
+		<tr><td colspan="5">No history.</td></tr>
+	{{end}}
+</tbody>
+</table>
+
+{{template "_backend_bottom.gohtml" .}}

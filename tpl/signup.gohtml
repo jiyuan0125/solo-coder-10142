@@ -1,0 +1,67 @@
+{{template "_top.gohtml" .}}
+
+<h1>Sign up for GoatCounter</h1>
+
+<p>You can use an account on any number of sites/domains; see <em>Settings</em>
+→ <em>sites</em> for separating them out.</p>
+
+<div id="signup-form">
+	<form class="vertical" method="post" action="{{.Base}}/signup">
+		<fieldset class="two">
+			<div>
+				<div>
+					<label for="code">Account name</label>
+					<input type="text" name="site_code" id="code" maxlength="50" value="{{.Site.Code}}">
+					{{validate "site.code" .Validate}}
+					<span class="help">You will access your account at https://<em>[account-name]</em>.{{.Domain}}.</span>
+				</div>
+				<div>
+					<label for="link_domain">Site domain</label>
+					<input type="text" name="link_domain" id="link_domain" maxlength="255" value="{{.Site.LinkDomain}}">
+					{{validate "site.link_domain" .Validate}}
+					<span class="help">Your site’s domain, used for display/linking; optional.</em></span>
+				</div>
+
+			</div>
+		</fieldset>
+
+		<fieldset class="two">
+			<div>
+				<div>
+					<label for="email">Email address</label>
+					<input type="email" name="user_email" id="email" value="{{.User.Email}}">
+					{{validate "user.email" .Validate}}
+					<span class="help">For password resets, important announcements, invoices.</span>
+				</div>
+				<div>
+					<label for="password">Password</label>
+					<input type="password" name="password" id="password" value="" autocomplete="new-password">
+					{{validate "user.password" .Validate}}
+					<span class="help">Needs at least 8 characters.</span>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset class="two">
+			<div>
+				<div>
+					<label for="turing_test">Fill in 9 here</label>
+					<input type="text" name="turing_test" id="turing_test" value="{{.TuringTest}}">
+					{{validate "turing_test" .Validate}}
+					<span class="help">Just a little verification that you’re human :-)</span>
+				</div>
+			</div>
+		</fieldset>
+
+		<input type="hidden" name="timezone" id="timezone">
+		<button type="submit">Sign up</button>
+	</form>
+
+	{{if has_errors .Validate}}
+		<div class="flash flash-e"
+				style="position: fixed; bottom: 0; right: 0; min-width: 20em; z-index: 5; text-align: left;">
+		{{.T "p/additional-errors|Additional errors"}}:{{.Validate.HTML}}</div>
+	{{end}}
+</div>
+
+{{template "_bottom.gohtml" .}}

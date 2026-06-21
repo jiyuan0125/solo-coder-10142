@@ -1,0 +1,114 @@
+package goatcounter
+
+import (
+	"context"
+
+	"zgo.at/errors"
+	"zgo.at/gadget"
+	"zgo.at/isbot"
+	"zgo.at/zdb"
+)
+
+type UserAgent struct {
+	UserAgent string
+	Isbot     uint8
+	BrowserID BrowserID
+	SystemID  SystemID
+}
+
+func (p *UserAgent) GetOrInsert(ctx context.Context) error {
+	shortUA := gadget.ShortenUA(p.UserAgent)
+	c, ok := cacheUA(ctx).Get(p.UserAgent)
+	if ok {
+		*p = c
+		cacheUA(ctx).Touch(shortUA)
+		return nil
+	}
+
+	var (
+		ua      = gadget.ParseUA(p.UserAgent)
+		browser Browser
+		system  System
+	)
+
+	err := browser.GetOrInsert(ctx, ua.BrowserName, ua.BrowserVersion)
+	if err != nil {
+		return errors.Wrap(err, "UserAgent.GetOrInsert")
+	}
+	p.BrowserID = browser.ID
+
+	err = system.GetOrInsert(ctx, ua.OSName, ua.OSVersion)
+	if err != nil {
+		return errors.Wrap(err, "UserAgent.GetOrInsert")
+	}
+	p.SystemID = system.ID
+
+	p.Isbot = uint8(isbot.UserAgent(p.UserAgent))
+
+	cacheUA(ctx).Set(shortUA, *p)
+	return nil
+}
+
+type BrowserID int32
+
+type Browser struct {
+	ID      BrowserID `db:"browser_id,id" json:"id"`
+	Name    string    `db:"name" json:"name"`
+	Version string    `db:"version" json:"version"`
+}
+
+func (Browser) Table() string { return "browsers" }
+
+func (b *Browser) GetOrInsert(ctx context.Context, name, version string) error {
+	k := name + version
+	c, ok := cacheBrowsers(ctx).Get(k)
+	if ok {
+		*b = c
+		cacheBrowsers(ctx).Touch(k)
+		return nil
+	}
+
+	b.Name, b.Version = name, version
+
+	err := zdb.Get(ctx, &b.ID, `select browser_id from browsers where name=$1 and version=$2`, name, version)
+	if zdb.ErrNoRows(err) {
+		err = zdb.Insert(ctx, b)
+	}
+	if err != nil {
+		return errors.Wrapf(err, "Browser.GetOrInsert(%q, %q)", name, version)
+	}
+	cacheBrowsers(ctx).Set(k, *b)
+	return nil
+}
+
+type SystemID int32
+
+type System struct {
+	ID      SystemID `db:"system_id,id" json:"id"`
+	Name    string   `db:"name" json:"name"`
+	Version string   `db:"version" json:"version"`
+}
+
+func (System) Table() string { return "systems" }
+
+func (s *System) GetOrInsert(ctx context.Context, name, version string) error {
+	k := name + version
+	c, ok := cacheSystems(ctx).Get(k)
+	if ok {
+		*s = c
+		cacheSystems(ctx).Touch(k)
+		return nil
+	}
+
+	s.Name, s.Version = name, version
+
+	err := zdb.Get(ctx, &s.ID, `select system_id from systems where name=$1 and version=$2`, name, version)
+	if zdb.ErrNoRows(err) {
+		err = zdb.Insert(ctx, s)
+	}
+	if err != nil {
+		return errors.Wrapf(err, "System.GetOrInsert(%q, %q)", name, version)
+	}
+	cacheSystems(ctx).Set(k, *s)
+	return nil
+}

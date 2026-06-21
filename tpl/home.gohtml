@@ -1,0 +1,125 @@
+{{template "_top.gohtml" .}}
+
+<div id="home-top">
+	<h1><img alt="" src="{{.Static}}/logo.svg" height="50"> GoatCounter</h1>
+	<div id="home-intro">
+		<strong><em>Easy</em> web analytics. <em>No tracking</em> of personal data.</strong>
+
+		<p>GoatCounter is an
+			<a href="https://github.com/arp242/goatcounter" target="_blank" rel="noopener">open source</a>
+			web analytics platform available as a free donation-supported hosted
+			service or <em>self-hosted</em> app. It aims to offer easy to use
+			and meaningful privacy-friendly web analytics as an alternative to
+			Google Analytics or Matomo.<br>
+			<a href="{{.Base}}/why">Why I made GoatCounter</a>
+		</p>
+	</div>
+
+	<div id="home-login">
+		<a class="hlink cbox" href="{{.Base}}/signup"><img src="{{.Static}}/index.svg" alt=""> Sign up</a>
+		<p>{{if .LoggedIn}}{{.LoggedIn}}{{else}}Already have an account? Sign in at <em>yourcode</em>.goatcounter.com.
+		<a href="//{{.Domain}}/user/forgot">Forgot?</a>{{end}}</p>
+	</div>
+
+	<div id="home-screens" class="two">
+		<p><a href="https://stats.arp242.net" target="_blank" rel="noopener">Live demo</a></p>
+		<figure>
+			<figcaption>The main dashboard</figcaption>
+			<img class="zoom" src="{{.Static}}/screenshot.png" alt="">
+		</figure>
+		<figure>
+			<figcaption>Additional information</figcaption>
+			<img class="zoom" src="{{.Static}}/screenshot2.png" alt="">
+		</figure>
+		<figure>
+			<figcaption>The “text view”, and filtering of paths</figcaption>
+			<img class="zoom" src="{{.Static}}/screenshot3.png" alt="">
+		</figure>
+	</div>
+</div>
+
+<h2 id="features">Features</h2>
+<div id="home-features">
+	<div>
+		<p><strong>Privacy-aware</strong>; doesn’t track users with unique
+		identifiers and doesn't need a GDPR notice. Fine-grained <strong>control over
+			which data is collected</strong>. Also see the <a href="{{.Base}}/privacy">privacy
+			policy</a> and <a href="{{.Base}}/gdpr">GDPR consent notices</a>.</p>
+
+		<p><strong>Lightweight</strong> and <strong>fast</strong>; adds just
+			~3.5KB of extra data to your site. Also has JavaScript-free
+			"tracking pixel" option, or you can use it from your application's
+			middleware or <strong>import from logfiles</strong>.
+</p>
+	</div>
+
+	<div>
+		<p>Identify <strong>unique visits</strong> without cookies or
+			persistently storing any personal data
+			(<a href="{{.Base}}/help/sessions">details</a>).</p>
+
+		<p>Keeps useful statistics such as <strong>browser</strong> information,
+			<strong>location</strong>, and <strong>screen size</strong>. Keep
+			track of <strong>referring sites</strong> and
+			<strong>campaigns</strong>.</p>
+	</div>
+
+	<div>
+		<p><strong>Easy</strong>; if you've been confused by the myriad of
+			options and flexibility of Google Analytics and Matomo that you
+			don't need then GoatCounter will be a breath of fresh air.</p>
+		<p><strong>Accessibility</strong> is a high-priority feature, and the
+			interface works well with assistive technology such as screen
+			readers.</p>
+	</div>
+
+	<div>
+		<p>100% committed to <strong>open source</strong>; you can see exactly
+			what the code does and make improvements, or <strong>self-host</strong>
+			it for any purpose. See <a href="https://github.com/arp242/goatcounter">the GitHub page</a>.</p>
+		<p><strong>Own your data</strong>; you can always export all data and
+			<strong>cancel at any time</strong>.</p>
+	</div>
+
+	<div>
+			<p>Integrate on your site with just <strong>a single script tag</strong>:<br>
+			<code>&lt;script data-goatcounter="https://yoursite.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"&gt;&lt;/script&gt;</code>
+			</p>
+
+		<p>The JavaScript integration is a good option for most, but you can
+			also use a <strong>no-JavaScript image-based tracker</strong>,
+			integrate in your <strong>backend middleware</strong>, or
+			<strong>parse log files</strong>.</p>
+	</div>
+</div>
+
+<h2 id="docs">Documents</h2>
+<div class="page" id="docs-list">
+	<p>Some documents about GoatCounter that don’t fit the <a href="{{.Base}}/help">documentation page</a>:</p>
+	<ul>
+		<li><a href="{{.Base}}/why">Why I made GoatCounter</a></li>
+		<li><a href="{{.Base}}/design">Notes about GoatCounter's design</a></li>
+
+		<li><a target="_blank" rel="noopener" href="https://www.arp242.net/personal-analytics.html">Analytics on personal websites</a></li>
+		<li><a target="_blank" rel="noopener" href="https://www.arp242.net/dnt.html">Why GoatCounter ignores Do Not Track</a></li>
+	</ul>
+</div>
+
+<h2 id="pricing">Pricing</h2>
+<div class="page">
+	<p>GoatCounter.com is currently offered for free for reasonable public
+	usage. Running your personal website or small-to-medium business on it is
+	fine, but sending millions of pageviews/day isn’t.</p>
+
+	<p>You can <a href="https://github.com/arp242/goatcounter">self-host GoatCounter</a>
+	easily if you want to use it for more serious purposes.</p>
+
+	<p>Donations are accepted via
+	<a href="https://github.com/sponsors/arp242/">Github Sponsors</a>
+	to cover server costs.</p>
+</div>
+
+<hr>
+
+{{template "_bottom.gohtml" .}}

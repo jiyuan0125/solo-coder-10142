@@ -1,0 +1,180 @@
+{{- template "_backend_top.gohtml" . -}}
+
+<div id="print-header">
+	GoatCounter report for {{tformat .Period.Start "" .User}} to {{tformat .Period.End "" .User}}
+</div>
+
+{{if .User.ID}}
+	{{if not .User.EmailVerified}}
+		<div class="flash flash-i">
+			{{.T "p/verify-email|Please verify your email by clicking the link sent to %(email). %[%sup (Why?)]" (map
+				"email" .User.Email
+				"sup"   (tag "a" `class="sup" href="https://www.goatcounter.com/help/faq#verify-email" target="_blank"`)
+			)}}<br>
+
+			{{.T "p/change-email|Change the email address in the %[settings]." (tag "a" (printf `href="%s/user"` .Base))}}
+
+			<form method="post" action="{{.Base}}/user/resend-verify">
+				<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+				<button class="link">{{.T "button/resend-email|Resend email"}}</button>.
+			</form>
+		</div>
+	{{end}}
+
+	{{if not .Site.ReceivedData}}
+		<div class="flash flash-i">
+			{{.T `p/no-data|<p>
+				%[%bold No data received] – GoatCounter hasn’t received any data yet.<br>
+				Getting started is pretty easy, just add the following JavaScript anywhere on the page:</p>
+
+				%[%pre %(js_code)]
+
+				<p>Check if your adblocker is blocking GoatCounter if you don’t see any pageviews (%(domain) and/or gc.zgo.at domain).</p>
+
+				<p>This message will disappear once we receive data; see %[%link_docs Site code] in the top menu for further documentation and ready-made integrations.</p>`
+				(map
+				"bold"      (tag "strong" "")
+				"pre"       (tag "pre" "")
+				"domain"    (.Site.Domain .Context)
+				"link_docs" (tag "a" (printf `href="%s/help"` .Base))
+				"js_code"   (printf "<script data-goatcounter=\"%s/count\"\n        async src=\"//%s/count.js\"></script>" (.Site.URL .Context) .CountDomain)
+			)}}
+		</div>
+	{{end}}
+{{end}} {{/* .User.ID */}}
+
+{{/* Hide in CSS as the JavaScript uses a number of the elements to render the charts. */}}
+{{if and (not .User.ID) (.HideUI)}}
+	<style>
+		#dash-form, nav.center { display: none; }
+		.page                  { max-width: unset; box-shadow: unset; margin: 0; padding: 0; }
+		html                   { background-color: unset; }
+	</style>
+{{end}}
+
+<form id="dash-form">
+	{{/* The first button gets used on the enter key, AFAICT there is no way to change that. */}}
+	<button type="submit" tabindex="-1" class="hide-btn" aria-label="{{.T "button/submit|Submit"}}"></button>
+	{{if .ShowRefs}}<input type="hidden" name="showrefs" value="{{.ShowRefs}}">{{end}}
+	<input type="hidden" id="hl-period" name="hl-period" value="{{.View.Period}}" disabled>
+	<input type="hidden" id="hl-group" name="group" value="{{.View.Group}}" disabled>
+
+	{{if .User.ID}}
+		<div id="dash-saved-views">
+			<span title="{{.T "help/configure-dashboard|Configure dashboard"}}">⚙&#xfe0f;</span>
+			<div>
+				<a href="#" class="save-current-view">{{.T "button/save-default-view|Save default view"}}</a><br>
+				<small>{{.T "help/save-default-view|Save the current view (i.e. all the settings in the yellow box) as the default to load when nothing is selected yet."}}</small>
+				<br><br>
+				{{/* TODO: it might be better to load the settings page "inline"
+				here, instead of a settings tab; would also declutter that a bit
+				since we can remove it there. */}}
+				<a href="{{.Base}}/user/dashboard">{{.T "button/cfg-dashboard|Configure dashboard layout"}}</a><br>
+				<small>{{.T "help/cfg-dashboard|Change what to display on the dashboard and in what order."}}</small>
+			</div>
+		</div>
+	{{end}}
+
+	<div id="dash-main">
+		<div>
+			<span>
+				<input type="text" class="date-input" autocomplete="off" id="period-start" name="period-start"
+					min="{{.Site.FirstHitAt.Format "2006-01-02"}}" max="{{time "now" "2006-01-02"}}"
+					title="{{.T "nav-dash/start-date|First day to display"}}"
+					value="{{tformat .Period.Start "" .User}}"
+				>–{{- "" -}}
+				<input type="text" class="date-input" autocomplete="off" id="period-end" name="period-end"
+					min="{{.Site.FirstHitAt.Format "2006-01-02"}}" max="{{time "now" "2006-01-02"}}"
+					title="{{.T "nav-dash/end-date|Last day to display"}}"
+					value="{{tformat .Period.End "" .User}}"
+				>{{- "" -}}
+			</span>
+			<span id="dash-select-period" class="period-{{.View.Period}}">
+				<span>
+					{{.T "nav-dash/last|Last"}} {{/* z18n: as in: "Last [day] [week] [month] ...*/}}
+					<button class="link" name="period" value="day">{{.T "nav-dash/day|day"}}</button> ·
+					<button class="link" name="period" value="week">{{.T "nav-dash/week|week"}}</button> ·
+					<button class="link" name="period" value="month">{{.T "nav-dash/month|month"}}</button> ·
+					<button class="link" name="period" value="quarter">{{.T "nav-dash/quarter|quarter"}}</button> ·
+					<button class="link" name="period" value="half-year">{{.T "nav-dash/half-year|half year"}}</button> ·
+					<button class="link" name="period" value="year">{{.T "nav-dash/year|year"}}</button>
+				</span>
+			</span>
+		</div>
+
+		<div style="text-align: right">
+			<div id="filter-outer">
+				<div id="filter-wrap" class="input{{if .View.Filter}} value{{end}}">
+					<div id="filter-styled" aria-hidden="true"></div>
+					<input
+						type="text" autocomplete="off" name="filter" value="{{.View.Filter}}" id="filter-paths"
+						placeholder="{{.T "nav-dash/filter|Filter paths"}}"
+						class="unstyled">
+				</div>
+				<div id="filter-help">{{.T `nav-dash/filter-tooltip|
+					<p>Filter the list of paths; matched case-insensitive on path and title. %[%more More help]</p>
+
+					<div>
+						<p>Recognizes the following keywords:</p>
+						<ul>
+							<li><em>at:start</em>, <em>at:end</em>:       match only at the start or end of path or title. Use both for exact match.</li>
+							<li><em>in:path</em>, <em>in:title</em>       match only path or title.</li>
+							<li><em>is:event</em>, <em>is:pageview</em>   show only events or pageviews.</li>
+							<li><em>:not</em> negate the match (that is: only show paths that don't match the filter).</li>
+						</ul>
+					</div>
+				` (tag "a" `href="#" id="filter-help-more"`)}}</div>
+			</div>
+			{{/* .T "nav-dash/by-day|View by day" */}}
+
+			<span id="dash-select-group" class="group-{{.View.Group}}">
+				{{.T `nav-dash/view-by|View by:`}}
+               {{$dot := ""}}
+               {{if .AllowGroups.Hourly}}
+                   <button class="link" name="group" value="hour">{{.T "nav-dash/hour|hour"}}</button>
+                   {{$dot = "· "}}
+               {{end}}
+               {{if .AllowGroups.Daily}}
+                   {{$dot}}<button class="link" name="group" value="day">{{.T "nav-dash/day|day"}}</button>
+                   {{$dot = "· "}}
+               {{end}}
+               {{if .AllowGroups.Weekly}}
+                   {{$dot}}<button class="link" name="group" value="week">{{.T "nav-dash/week|week"}}</button>
+                   {{$dot = "· "}}
+               {{end}}
+               {{if .AllowGroups.Monthly}}
+                   {{$dot}}<button class="link" name="group" value="month">{{.T "nav-dash/month|month"}}</button>
+               {{end}}
+               <input type="hidden" name="group" value="{{.View.Group}}">
+			</span>
+		</div>
+	</div>
+	<div id="dash-move">
+		<div>
+			←&#xfe0e; {{.T "nav-dash/back|back"}}  {{/* z18n: as in: "← back [day] [week] [month]" */}}
+			<span>
+				<button class="link" name="move" value="day-b">{{.T "nav-dash/day|day"}}</button> ·
+				<button class="link" name="move" value="week-b">{{.T "nav-dash/week|week"}}</button> ·
+				<button class="link" name="move" value="month-b">{{.T "nav-dash/month|month"}}</button> ·
+				<button class="link" name="move" value="year-b">{{.T "nav-dash/year|year"}}</button>
+			</span>
+		</div>
+		<div id="dash-timerange">{{.Period}}</div>
+		<div>
+			<span>
+				<button class="link" name="move" value="day-f">{{.T "nav-dash/day|day"}}</button> ·
+				<button class="link" name="move" value="week-f">{{.T "nav-dash/week|week"}}</button> ·
+				<button class="link" name="move" value="month-f">{{.T "nav-dash/month|month"}}</button> ·
+				<button class="link" name="move" value="year-f">{{.T "nav-dash/year|year"}}</button>
+			</span>
+			{{.T "nav-dash/forward|forward"}} →&#xfe0e; {{/* z18n: as in: "[day] [week] [month] forward →" */}}
+		</div>
+	</div>
+</form>
+<span class="hide js-total">{{.Total}}</span>
+<span class="hide js-total-utc">{{.TotalUTC}}</span>
+<span class="hide" id="js-connect-id">{{.ConnectID}}</span>
+
+{{template "_dashboard_widgets.gohtml" .}}
+
+{{- template "_backend_bottom.gohtml" . }}
