@@ -76,33 +76,25 @@ func Start(ctx context.Context) {
 
 			id := t.ID()
 			for {
-				period := t.Period
+				var p time.Duration
 				if id == "persistAndStat" {
-					period = time.Duration(persistInterval.Load())
+					p = time.Duration(persistInterval.Load())
+				} else {
+					p = t.Period
 				}
 
-				p := period
 				// Add some random jitter to prevent jobs from running at
 				// the same time.
-				if period > time.Minute {
-					m := period / 50
-					if period >= time.Hour*12 {
-						m = period / 100
+				if p > time.Minute {
+					m := p / 50
+					if p >= time.Hour*12 {
+						m = p / 100
 					}
 					rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
 					if rand.IntN(2) == 1 {
 						rnd = -rnd
 					}
 					p += rnd
-				} else if period > 0 {
-					m := period / 10
-					if m > 0 {
-						rnd := time.Duration(rand.Int64N(int64(m)))
-						if rand.IntN(2) == 1 {
-							rnd = -rnd
-						}
-						p += rnd
-					}
 				}
 				time.Sleep(p)
 

@@ -8,7 +8,6 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"zgo.at/goatcounter/v2/pkg/log"
@@ -21,11 +20,8 @@ import (
 )
 
 var (
-	// Valid UUID for testing: 00112233-4455-6677-8899-aabbccddeeff
 	TestSession    = zint.Uint128{0x11223344556677, 0x8899aabbccddeeff}
 	TestSeqSession = zint.Uint128{TestSession[0], TestSession[1] + 1}
-
-	testSeqSession atomic.Uint64
 )
 
 var (
@@ -36,20 +32,24 @@ var (
 
 type sessionKey string
 
-type session struct {
-	id    zint.Uint128
-	key   sessionKey
-	paths map[PathID]struct{}
-	seen  int64
+type sessionEntry struct {
+	ID       zint.Uint128
+	Key      sessionKey
+	Paths    map[PathID]struct{}
+	LastSeen int64
+}
+
+type storedSession struct {
+	Sessions map[sessionKey]*sessionEntry `json:"sessions"`
 }
 
 type ms struct {
 	hitMu sync.RWMutex
 	hits  []Hit
 
-	sessionMu    sync.RWMutex
-	sessionsByKey map[sessionKey]*session   // sessionKey → session
-	sessionsByID  map[zint.Uint128]*session // sessionID → session
+	sessionMu   sync.RWMutex
+	sessions    map[sessionKey]*sessionEntry
+	sessionsByID map[zint.Uint128]*sessionEntry
 
 	sessionTime time.Duration
 	testHook    bool
@@ -57,44 +57,24 @@ type ms struct {
 
 var Memstore ms
 
-type storedSession struct {
-	Sessions map[sessionKey]zint.Uint128          `json:"sessions"`
-	Hashes   map[zint.Uint128]sessionKey          `json:"hashes"`
-	Paths    map[zint.Uint128]map[PathID]struct{} `json:"paths"`
-	Seen     map[zint.Uint128]int64               `json:"seen"`
-}
-
 func (m *ms) Reset() {
 	m.sessionMu.Lock()
 	defer m.sessionMu.Unlock()
 
-	m.sessionsByKey = make(map[sessionKey]*session)
-	m.sessionsByID = make(map[zint.Uint128]*session)
-	testSeqSession.Store(TestSession[1] + 1)
+	m.sessions = make(map[sessionKey]*sessionEntry)
+	m.sessionsByID = make(map[zint.Uint128]*sessionEntry)
 	TestSeqSession = zint.Uint128{TestSession[0], TestSession[1] + 1}
 }
 
-// TestInit is like Init(), but enables the test hook to return sequential UUIDs
-// instead of random ones.
-func (m *ms) TestInit(db zdb.DB) error {
-	m.testHook = true
-	return m.Init(db)
-}
-
-// SetSessionTime sets the session expiration duration.
 func (m *ms) SetSessionTime(d time.Duration) {
 	m.sessionMu.Lock()
 	defer m.sessionMu.Unlock()
 	m.sessionTime = d
 }
 
-func (m *ms) getSessionTime() time.Duration {
-	m.sessionMu.RLock()
-	defer m.sessionMu.RUnlock()
-	if m.sessionTime > 0 {
-		return m.sessionTime
-	}
-	return SessionTime
+func (m *ms) TestInit(db zdb.DB) error {
+	m.testHook = true
+	return m.Init(db)
 }
 
 func (m *ms) Init(db zdb.DB) error {
@@ -123,68 +103,42 @@ func (m *ms) Init(db zdb.DB) error {
 		return nil
 	}
 
-	if stored.Sessions != nil && stored.Hashes != nil {
-		for sk, id := range stored.Sessions {
-			s := &session{
-				id:    id,
-				key:   sk,
-				paths: make(map[PathID]struct{}),
-			}
-			if p, ok := stored.Paths[id]; ok {
-				s.paths = p
-			}
-			if seen, ok := stored.Seen[id]; ok {
-				s.seen = seen
-			}
-			m.sessionsByKey[sk] = s
-			m.sessionsByID[id] = s
+	if stored.Sessions != nil {
+		m.sessions = stored.Sessions
+		m.sessionsByID = make(map[zint.Uint128]*sessionEntry, len(stored.Sessions))
+		for _, entry := range stored.Sessions {
+			m.sessionsByID[entry.ID] = entry
 		}
 	}
-
 	memlog.Debug(context.Background(), "restored sessions from DB",
-		"sessions", len(m.sessionsByKey),
-		"sessionIDs", len(m.sessionsByID))
+		"sessions", len(m.sessions),
+		"sessionsByID", len(m.sessionsByID))
 	return nil
 }
 
 func (m *ms) StoreSessions(db zdb.DB) {
 	m.sessionMu.RLock()
-	sessions := make(map[sessionKey]zint.Uint128, len(m.sessionsByKey))
-	hashes := make(map[zint.Uint128]sessionKey, len(m.sessionsByID))
-	paths := make(map[zint.Uint128]map[PathID]struct{}, len(m.sessionsByID))
-	seen := make(map[zint.Uint128]int64, len(m.sessionsByID))
-	for sk, s := range m.sessionsByKey {
-		sessions[sk] = s.id
-		hashes[s.id] = sk
-		paths[s.id] = s.paths
-		seen[s.id] = s.seen
-	}
-	m.sessionMu.RUnlock()
+	defer m.sessionMu.RUnlock()
 
 	d, err := json.Marshal(storedSession{
-		Sessions: sessions,
-		Paths:    paths,
-		Seen:     seen,
-		Hashes:   hashes,
+		Sessions: m.sessions,
 	})
 	if err != nil {
 		memlog.Error(context.Background(), err)
 		return
 	}
 
-	err = db.Exec(context.Background(), `
-		insert into store (key, value) values ('session', $1)
-		on conflict (key) do update set value = excluded.value
-	`, d)
+	err = db.Exec(context.Background(),
+		`insert into store (key, value) values ('session', $1)
+		 on conflict (key) do update set value = excluded.value`, d)
 	if err != nil {
 		memlog.Error(context.Background(), err)
+		return
 	}
 
 	memlog.Debug(context.Background(), "stored sessions in DB",
 		"bytesize", len(d),
-		"sessions", len(sessions),
-		"paths", len(paths),
-		"seen", len(seen))
+		"sessions", len(m.sessions))
 }
 
 func (m *ms) Append(hits ...Hit) {
@@ -196,12 +150,12 @@ func (m *ms) Append(hits ...Hit) {
 func (m *ms) SessionsLen() int {
 	m.sessionMu.RLock()
 	defer m.sessionMu.RUnlock()
-	return len(m.sessionsByKey)
+	return len(m.sessions)
 }
 
 func (m *ms) Len() int {
-	m.hitMu.Lock()
-	defer m.hitMu.Unlock()
+	m.hitMu.RLock()
+	defer m.hitMu.RUnlock()
 	return len(m.hits)
 }
 
@@ -258,8 +212,6 @@ func (m *ms) Persist(ctx context.Context) ([]Hit, error) {
 			continue
 		}
 		if m.processHit(ctx, &h) {
-			// Don't return hits that failed validation; otherwise cron will try to
-			// insert them.
 			newHits = append(newHits, h)
 
 			if !h.NoStore {
@@ -273,7 +225,6 @@ func (m *ms) Persist(ctx context.Context) ([]Hit, error) {
 		}
 	}
 
-	// Just log errors on inserting bots; not that important.
 	if err := bot.Finish(); err != nil {
 		memlog.Errorf(ctx, "storing bots: %s", err)
 	}
@@ -287,7 +238,6 @@ func (m *ms) processHit(ctx context.Context, h *Hit) bool {
 		return true
 	}
 
-	// Ignore spammers.
 	h.RefURL, _ = url.Parse(h.Ref)
 	if h.RefURL != nil {
 		if isRefspam(h.RefURL.Host) {
@@ -299,8 +249,6 @@ func (m *ms) processHit(ctx context.Context, h *Hit) bool {
 	var site Site
 	err := site.ByID(ctx, h.Site)
 	if err != nil {
-		// This happens if the site gets deleted before the persist runs. We
-		// don't really need to log that as an error.
 		if !zdb.ErrNoRows(err) {
 			memlog.Error(ctx, err, "hit", h)
 		}
@@ -371,46 +319,44 @@ func (m *ms) processHit(ctx context.Context, h *Hit) bool {
 	return true
 }
 
-// SessionTime is the maximum length of sessions; exported here for tests.
-// Deprecated: use SetSessionTime() on the ms struct instead.
 var SessionTime = 8 * time.Hour
 
-// For 10k sessions this takes about 5ms on my laptop; that's a small enough
-// delay to not overly worry about (there are rarely more than a few hundred
-// sessions at a time).
 func (m *ms) EvictSessions(ctx context.Context) {
 	m.sessionMu.Lock()
 	defer m.sessionMu.Unlock()
 
-	ev := ztime.Now(ctx).Add(-m.getSessionTime()).Unix()
-	for _, s := range m.sessionsByKey {
-		if s.seen > ev {
+	st := m.sessionTime
+	if st == 0 {
+		st = SessionTime
+	}
+	ev := ztime.Now(ctx).Add(-st).Unix()
+	for id, entry := range m.sessionsByID {
+		if entry.LastSeen > ev {
 			continue
 		}
 
 		sesslog.Debug(context.Background(), "evicting session",
-			"session-id", s.id,
-			"last-seen", s.seen,
-			"session-key", s.key)
+			"session-id", id,
+			"last-seen", entry.LastSeen,
+			"session-key", entry.Key)
 
-		delete(m.sessionsByKey, s.key)
-		delete(m.sessionsByID, s.id)
+		delete(m.sessions, entry.Key)
+		delete(m.sessionsByID, id)
 	}
 }
 
-// SessionID gets a new UUID4 session ID.
 func (m *ms) SessionID() zint.Uint128 {
 	if m.testHook {
-		seq := testSeqSession.Add(1)
-		TestSeqSession = zint.Uint128{TestSession[0], seq}
+		TestSeqSession[1]++
 		return TestSeqSession
 	}
+	return UUID()
+}
+
+func (m *ms) newSessionID() zint.Uint128 {
 	for {
-		id := UUID()
-		m.sessionMu.RLock()
-		_, exists := m.sessionsByID[id]
-		m.sessionMu.RUnlock()
-		if !exists {
+		id := m.SessionID()
+		if _, exists := m.sessionsByID[id]; !exists {
 			return id
 		}
 	}
@@ -423,78 +369,77 @@ func (m *ms) session(ctx context.Context, siteID SiteID, pathID PathID, userSess
 	}
 
 	m.sessionMu.RLock()
-	s, ok := m.sessionsByKey[sk]
+	entry, ok := m.sessions[sk]
 	if ok {
-		id := s.id
-		_, seenPath := s.paths[pathID]
+		id := entry.ID
+		_, seenPath := entry.Paths[pathID]
 		m.sessionMu.RUnlock()
 
 		m.sessionMu.Lock()
-		if s, ok := m.sessionsByKey[sk]; ok && s.id == id {
-			s.seen = ztime.Now(ctx).Unix()
-			if !seenPath {
-				s.paths[pathID] = struct{}{}
-			}
-		} else {
-			seenPath = false
-			if s == nil {
-				id = m.SessionID()
-				s = &session{
-					id:    id,
-					key:   sk,
-					paths: map[PathID]struct{}{pathID: {}},
-					seen:  ztime.Now(ctx).Unix(),
-				}
-			} else {
-				id = s.id
-				s.seen = ztime.Now(ctx).Unix()
-				if _, exists := s.paths[pathID]; exists {
-					seenPath = true
-				} else {
-					s.paths[pathID] = struct{}{}
-				}
-			}
-			m.sessionsByKey[sk] = s
-			m.sessionsByID[id] = s
-		}
-		m.sessionMu.Unlock()
+		defer m.sessionMu.Unlock()
 
-		sesslog.Debug(ctx, "HIT",
+		entry, ok = m.sessions[sk]
+		if ok {
+			entry.LastSeen = ztime.Now(ctx).Unix()
+			_, seenPath = entry.Paths[pathID]
+			if !seenPath {
+				entry.Paths[pathID] = struct{}{}
+			}
+
+			sesslog.Debug(ctx, "HIT",
+				"session-key", sk,
+				"session-id", id,
+				"path", pathID,
+				"seen-path", seenPath)
+			return id, zbool.Bool(!seenPath)
+		}
+
+		id = m.newSessionID()
+		entry = &sessionEntry{
+			ID:       id,
+			Key:      sk,
+			Paths:    map[PathID]struct{}{pathID: {}},
+			LastSeen: ztime.Now(ctx).Unix(),
+		}
+		m.sessions[sk] = entry
+		m.sessionsByID[id] = entry
+
+		sesslog.Debug(ctx, "MISS: created new (after race)",
 			"session-key", sk,
 			"session-id", id,
-			"path", pathID,
-			"seen-path", seenPath)
-		return id, zbool.Bool(!seenPath)
+			"path", pathID)
+		return id, true
 	}
 	m.sessionMu.RUnlock()
 
 	m.sessionMu.Lock()
 	defer m.sessionMu.Unlock()
 
-	if s, ok := m.sessionsByKey[sk]; ok {
-		s.seen = ztime.Now(ctx).Unix()
-		_, seenPath := s.paths[pathID]
+	entry, ok = m.sessions[sk]
+	if ok {
+		entry.LastSeen = ztime.Now(ctx).Unix()
+		_, seenPath := entry.Paths[pathID]
 		if !seenPath {
-			s.paths[pathID] = struct{}{}
+			entry.Paths[pathID] = struct{}{}
 		}
 
-		sesslog.Debug(ctx, "HIT (after recheck)",
+		sesslog.Debug(ctx, "HIT (after upgrade)",
 			"session-key", sk,
-			"session-id", s.id,
+			"session-id", entry.ID,
 			"path", pathID,
 			"seen-path", seenPath)
-		return s.id, zbool.Bool(!seenPath)
+		return entry.ID, zbool.Bool(!seenPath)
 	}
 
-	id := m.SessionID()
-	s = &session{
-		id:    id,
-		key:   sk,
-		paths: map[PathID]struct{}{pathID: {}},
-		seen:  ztime.Now(ctx).Unix(),
+	id := m.newSessionID()
+	entry = &sessionEntry{
+		ID:       id,
+		Key:      sk,
+		Paths:    map[PathID]struct{}{pathID: {}},
+		LastSeen: ztime.Now(ctx).Unix(),
 	}
-	m.sessionsByKey[sk] = s
-	m.sessionsByID[id] = s
+	m.sessions[sk] = entry
+	m.sessionsByID[id] = entry
 
 	sesslog.Debug(ctx, "MISS: created new",
 		"session-key", sk,
