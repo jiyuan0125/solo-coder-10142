@@ -1,0 +1,627 @@
+package goatcounter_test
+
+import (
+	"fmt"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	. "zgo.at/goatcounter/v2"
+	"zgo.at/goatcounter/v2/gctest"
+	"zgo.at/zdb"
+	"zgo.at/zstd/zjson"
+	"zgo.at/zstd/ztest"
+	"zgo.at/zstd/ztime"
+)
+
+func TestHitListsList(t *testing.T) {
+	rng := ztime.NewRange(time.Date(2019, 8, 10, 0, 0, 0, 0, time.UTC)).
+		To(time.Date(2019, 8, 17, 23, 59, 59, 0, time.UTC))
+	hit := rng.Start.Add(1 * time.Second)
+
+	tests := []struct {
+		in         []Hit
+		inFilter   string
+		inExclude  []PathID
+		wantReturn string
+		wantStats  HitLists
+	}{
+		{
+			in: []Hit{
+				{FirstVisit: true, CreatedAt: hit, Path: "/asd"},
+				{FirstVisit: true, CreatedAt: hit.Add(40 * time.Hour), Path: "/asd/"},
+				{FirstVisit: true, CreatedAt: hit.Add(100 * time.Hour), Path: "/zxc"},
+			},
+			wantReturn: "3 false <nil>",
+			wantStats: HitLists{
+				HitList{Count: 2, Path: "/asd", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(map[int]int{14: 1})},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(map[int]int{6: 1})},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(nil)},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+				HitList{Count: 1, Path: "/zxc", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(nil)},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(nil)},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(map[int]int{18: 1})},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+			},
+		},
+		{
+			in: []Hit{
+				{FirstVisit: true, CreatedAt: hit, Path: "/asd"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/zxc"},
+			},
+			inFilter:   "x",
+			wantReturn: "1 false <nil>",
+			wantStats: HitLists{
+				HitList{Count: 1, Path: "/zxc", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(map[int]int{14: 1})},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(nil)},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(nil)},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+			},
+		},
+		{
+			in: []Hit{
+				{FirstVisit: true, CreatedAt: hit, Path: "/a"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/aa"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/aaa"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/aaaa"},
+			},
+			inFilter:   "a",
+			wantReturn: "2 true <nil>",
+			wantStats: HitLists{
+				HitList{Count: 1, Path: "/aaaa", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(map[int]int{14: 1})},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(nil)},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(nil)},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+				HitList{Count: 1, Path: "/aaa", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(map[int]int{14: 1})},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(nil)},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(nil)},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+			},
+		},
+		{
+			in: []Hit{
+				{FirstVisit: true, CreatedAt: hit, Path: "/a"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/aa"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/aaa"},
+				{FirstVisit: true, CreatedAt: hit, Path: "/aaaa"},
+			},
+			inFilter:   "a",
+			inExclude:  []PathID{4, 3},
+			wantReturn: "2 false <nil>",
+			wantStats: HitLists{
+				HitList{Count: 1, Path: "/aa", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(map[int]int{14: 1})},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(nil)},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(nil)},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+				HitList{Count: 1, Path: "/a", RefScheme: nil, Stats: []HitListStat{
+					{Day: "2019-08-10", Hourly: dayStat(map[int]int{14: 1})},
+					{Day: "2019-08-11", Hourly: dayStat(nil)},
+					{Day: "2019-08-12", Hourly: dayStat(nil)},
+					{Day: "2019-08-13", Hourly: dayStat(nil)},
+					{Day: "2019-08-14", Hourly: dayStat(nil)},
+					{Day: "2019-08-15", Hourly: dayStat(nil)},
+					{Day: "2019-08-16", Hourly: dayStat(nil)},
+					{Day: "2019-08-17", Hourly: dayStat(nil)},
+				}},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			ctx := gctest.DB(t)
+
+			site := MustGetSite(ctx)
+			for j := range tt.in {
+				if tt.in[j].Site == 0 {
+					tt.in[j].Site = site.ID
+				}
+			}
+
+			gctest.StoreHits(ctx, t, false, tt.in...)
+
+			pathsFilter, err := PathFilterFromQuery(ctx, tt.inFilter)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var stats HitLists
+			uniqueDisplay, more, err := stats.List(ctx, rng, pathsFilter, tt.inExclude, 2, GroupHourly)
+
+			have := fmt.Sprintf("%d %t %v", uniqueDisplay, more, err)
+			if have != tt.wantReturn {
+				t.Errorf("wrong return\nhave: %s\nwant: %s\n", have, tt.wantReturn)
+				zdb.Dump(ctx, os.Stdout, "select * from paths")
+				zdb.Dump(ctx, os.Stdout, "select * from hit_counts")
+			}
+
+			out := strings.ReplaceAll(", ", ",\n", fmt.Sprintf("%+v", stats))
+			want := strings.ReplaceAll(", ", ",\n", fmt.Sprintf("%+v", tt.wantStats))
+			if d := ztest.Diff(out, want); d != "" {
+				t.Fatal(d)
+			}
+		})
+	}
+
+	// Make sure that filtering 70k paths works.
+	t.Run("70k", func(t *testing.T) {
+		// Directly insert because it's much faster.
+		var (
+			ctx        = gctest.DB(t)
+			bPaths, _  = zdb.NewBulkInsert(ctx, "paths", []string{"site_id", "path"})
+			bCounts, _ = zdb.NewBulkInsert(ctx, "hit_counts", []string{"site_id", "path_id", "hour", "total"})
+		)
+		for i := range 70_000 {
+			bPaths.Values(1, fmt.Sprintf("/x-%d", i+1))
+			bCounts.Values(1, i+1, "2019-08-11 01:00:00", 10)
+		}
+		err := bPaths.Finish()
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = bCounts.Finish()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		paths, err := PathFilterFromQuery(ctx, "x")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		tc, err := GetTotalCount(ctx, rng, paths, true)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := 700_000
+		//if zdb.SQLDialect(ctx) == zdb.DialectSQLite {
+		//	want = 100_000
+		//}
+
+		if tc.Total != want || tc.TotalUTC != want {
+			t.Fatalf("Total: %d; TotalUTC: %d; want: %d", tc.Total, tc.TotalUTC, want)
+		}
+	})
+}
+
+func TestGetTotalCount(t *testing.T) {
+	ctx := gctest.DB(t)
+	ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:00:00"))
+	rng := ztime.NewRange(ztime.Now(ctx)).To(ztime.Now(ctx))
+
+	gctest.StoreHits(ctx, t, false,
+		Hit{Path: "/a", FirstVisit: true},
+		Hit{Path: "/b", FirstVisit: true},
+		Hit{Path: "/a", FirstVisit: false},
+		Hit{Path: "ev", FirstVisit: true, Event: true},
+		Hit{Path: "ev", FirstVisit: false, Event: true})
+
+	{
+		have, err := GetTotalCount(ctx, rng, PathFilter{}, true)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := `{
+			"total": 3,
+			"total_events": 1,
+			"total_utc": 3
+		}`
+		if d := ztest.Diff(zjson.MustMarshalString(have), want, ztest.DiffJSON); d != "" {
+			t.Error(d)
+		}
+	}
+}
+
+func TestHitListTotals(t *testing.T) {
+	ctx := gctest.DB(t)
+	ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:00:00"))
+
+	gctest.StoreHits(ctx, t, false,
+		Hit{Path: "/a", FirstVisit: true},
+		Hit{Path: "/b", FirstVisit: true},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+		Hit{Path: "/a"},
+	)
+
+	t.Run("hourly", func(t *testing.T) {
+		rng := ztime.NewRange(ztime.Now(ctx)).To(ztime.Now(ctx))
+
+		want := []string{`
+			{
+				"count":   2,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  2,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 2,
+					"weekly": 2
+				}],
+				"title":   ""
+			}
+			`, `
+			{
+				"count":   1,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  1,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 1,
+					"weekly": 1
+				}],
+				"title":   ""
+			}
+			`, `
+			{
+				"count":   1,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  1,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 1,
+					"weekly": 1
+				}],
+				"title":   ""
+			}
+			`, `
+			{
+				"count":   2,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  2,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 2,
+					"weekly": 2
+				}],
+				"title":   ""
+			}
+			`,
+		}
+		for i, filter := range [][]PathID{nil, []PathID{1}, []PathID{2}, []PathID{1, 2}} {
+			t.Run("", func(t *testing.T) {
+				var hs HitList
+				err := hs.Totals(ctx, rng, PathFilterFromIDs(filter), GroupHourly, false)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if d := ztest.Diff(zjson.MustMarshalString(hs), want[i], ztest.DiffJSON); d != "" {
+					t.Error(d)
+				}
+			})
+		}
+	})
+
+	t.Run("daily", func(t *testing.T) {
+		rng := ztime.NewRange(ztime.Now(ctx)).To(ztime.Now(ctx))
+
+		want := []string{
+			`
+			{
+				"count":   2,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  2,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 2,
+					"weekly": 2
+				}],
+				"title":   ""
+			}
+			`, `
+			{
+				"count":   1,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  1,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 1,
+					"weekly": 1
+				}],
+				"title":   ""
+			}
+			`, `
+			{
+				"count":   1,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  1,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 1,
+					"weekly": 1
+				}],
+				"title":   ""
+			}
+			`, `
+			{
+				"count":   2,
+				"event":   false,
+				"max":     10,
+				"path":    "TOTAL ",
+				"path_id": 0,
+				"stats":   [{
+					"daily":  2,
+					"day":    "2020-06-18",
+					"hourly": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					"monthly": 2,
+					"weekly": 2
+				}],
+				"title":   ""
+			}
+			`,
+		}
+
+		for i, filter := range [][]PathID{nil, []PathID{1}, []PathID{2}, []PathID{1, 2}} {
+			t.Run("", func(t *testing.T) {
+				var hs HitList
+				err := hs.Totals(ctx, rng, PathFilterFromIDs(filter), GroupDaily, false)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				if d := ztest.Diff(zjson.MustMarshalString(hs), want[i], ztest.DiffJSON); d != "" {
+					t.Error(d)
+				}
+			})
+		}
+	})
+}
+
+func TestHitListsPathCount(t *testing.T) {
+	ctx := gctest.DB(t)
+	ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18"))
+
+	gctest.StoreHits(ctx, t, false,
+		Hit{FirstVisit: true, Path: "/"},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-2 * 24 * time.Hour)},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-2 * 24 * time.Hour)},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-9 * 24 * time.Hour)},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-9 * 24 * time.Hour)},
+		Hit{FirstVisit: false, Path: "/"},
+
+		Hit{FirstVisit: true, Path: "/a"},
+		Hit{FirstVisit: true, Path: "/a", CreatedAt: ztime.Now(ctx).Add(-2 * 24 * time.Hour)},
+	)
+
+	{
+		var have HitList
+		err := have.PathCount(ctx, "/", ztime.Range{})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := `{
+			"count":  5,
+			"event":         false,
+			"max":           0,
+			"path":          "/",
+			"path_id":       0,
+			"stats":         null,
+			"title":         ""
+		}`
+		if d := ztest.Diff(zjson.MustMarshalString(have), want, ztest.DiffJSON); d != "" {
+			t.Error(d)
+		}
+	}
+
+	{
+		var have HitList
+		err := have.PathCount(ctx, "/", ztime.NewRange(
+			ztime.Now(ctx).Add(-8*24*time.Hour)).
+			To(ztime.Now(ctx).Add(-1*24*time.Hour)))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := `{
+			"count":  2,
+			"event":         false,
+			"max":           0,
+			"path":          "/",
+			"path_id":       0,
+			"stats":         null,
+			"title":         ""
+		}`
+		if d := ztest.Diff(zjson.MustMarshalString(have), want, ztest.DiffJSON); d != "" {
+			t.Error(d)
+		}
+	}
+}
+
+func TestHitListSiteTotalUnique(t *testing.T) {
+	ctx := gctest.DB(t)
+	ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18"))
+
+	gctest.StoreHits(ctx, t, false,
+		Hit{FirstVisit: true, Path: "/"},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-2 * 24 * time.Hour)},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-2 * 24 * time.Hour)},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-9 * 24 * time.Hour)},
+		Hit{FirstVisit: true, Path: "/", CreatedAt: ztime.Now(ctx).Add(-9 * 24 * time.Hour)},
+
+		Hit{FirstVisit: false, Path: "/"},
+		Hit{FirstVisit: true, Path: "/a"},
+		Hit{FirstVisit: true, Path: "/a", CreatedAt: ztime.Now(ctx).Add(-2 * 24 * time.Hour)},
+	)
+
+	{
+		var have HitList
+		err := have.SiteTotalUTC(ctx, ztime.Range{})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := `{
+			"count":  7,
+			"event":         false,
+			"max":           0,
+			"path":          "",
+			"path_id":       0,
+			"stats":         null,
+			"title":         ""
+		}`
+		if d := ztest.Diff(zjson.MustMarshalString(have), want, ztest.DiffJSON); d != "" {
+			t.Error(d)
+		}
+	}
+
+	{
+		var have HitList
+		err := have.SiteTotalUTC(ctx, ztime.NewRange(
+			ztime.Now(ctx).Add(-8*24*time.Hour)).
+			To(ztime.Now(ctx).Add(-1*24*time.Hour)))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := `{
+			"count":  3,
+			"event":         false,
+			"max":           0,
+			"path":          "",
+			"path_id":       0,
+			"stats":         null,
+			"title":         ""
+		}`
+		if d := ztest.Diff(zjson.MustMarshalString(have), want, ztest.DiffJSON); d != "" {
+			t.Error(d)
+		}
+	}
+}
+
+// func (h *HitLists) ListPathsLike(ctx context.Context, search string, matchTitle, matchCase bool) error {
+func TestHitListsListPathsLike(t *testing.T) {
+	str := func(h HitLists) string {
+		var b strings.Builder
+		for i, hh := range h {
+			if i > 0 {
+				b.WriteString(", ")
+			}
+			b.WriteString(hh.Path)
+		}
+		return b.String()
+	}
+
+	ctx := gctest.DB(t)
+	gctest.StoreHits(ctx, t, false,
+		Hit{FirstVisit: true, Path: "/"},
+		Hit{FirstVisit: true, Path: "/hello"},
+		Hit{FirstVisit: true, Path: "/hello\\"},
+		Hit{FirstVisit: true, Path: "/hey_there"},
+		Hit{FirstVisit: true, Path: "/per%cent"},
+		Hit{FirstVisit: true, Path: "/back\\slash"},
+	)
+
+	tests := []struct {
+		search        string
+		title, casing bool
+		want          string
+	}{
+		// Exact matches
+		{``, false, false, ``},
+		{`/`, false, false, `/`},
+
+		// Wildcards
+		{`/h%`, false, false, `/hello, /hello\, /hey_there`},
+		{`/heythere%`, false, false, ``},
+		{`/hey_there`, false, false, `/hey_there`},
+		{`/he__there`, false, false, `/hey_there`},
+
+		// Allow escaping _ and % with \
+		{`/hey\_there`, false, false, `/hey_there`},
+		{`/%%%`, false, false, `/, /hello, /hello\, /hey_there, /per%cent, /back\slash`},
+		{`/%\%%`, false, false, `/per%cent`},
+
+		// Backslash that doesn't escape
+		{`/back\slash`, false, false, ``},
+		{`/back\\slash`, false, false, `/back\slash`},
+		{`/hello\`, false, false, ``},
+		{`/hello\\`, false, false, `/hello\`},
+	}
+
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			var list HitLists
+			err := list.ListPathsLike(ctx, tt.search, tt.title, tt.casing)
+			if err != nil {
+				t.Fatal(err)
+			}
+			have := str(list)
+			if have != tt.want {
+				t.Errorf("\nhave: %s\nwant: %s", have, tt.want)
+			}
+		})
+	}
+}

@@ -1,0 +1,27 @@
+<div class="totals" data-widget="{{.ID}}">
+	<div class="widget-header">
+		<h2>{{t .Context "dashboard/totals/header|Totals"}}
+			{{if not $.User.Settings.FewerNumbers}}
+				{{if .NoEvents}}
+					<small>{{t .Context `dashboard/totals/num-visits|%(num-visits) visits; excluding events`
+						(map
+							"num-visits" (tag "span" `` (nformat (sub .Total .TotalEvents) $.User))
+						)}}</small>
+				{{else}}
+					<small>{{t .Context `dashboard/totals/num-visits|%(num-visits) visits`
+						(map
+							"num-visits" (tag "span" `` (nformat .Total $.User))
+						)}}</small>
+				{{end}}
+			{{end}}
+		</h2>
+		<a href="#" class="logged-in configure-widget" aria-label="{{t $.Context "button/cfg-dashboard|Configure"}}">⚙&#xfe0f;</a>
+	</div>
+
+	{{if .Err}}
+		<em>{{t .Context "p/error|Error: %(error-message)" .Err.Error}}</em>
+	{{else}}
+		<table class="count-list">{{template "_dashboard_totals_row.gohtml" .}}</table>
+	{{end}}
+</div>
+

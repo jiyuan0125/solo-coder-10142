@@ -1,0 +1,994 @@
+[__meta__]
+  language = "uk-UA"
+  maintainers = []
+  modified = 2024-06-11
+
+["button/add-new"]
+  default = "Додати новий"
+
+["button/add-user"]
+  default = "Додати нового користувача"
+
+["button/cfg-dashboard"]
+  default = "Налаштувати макет інформаційної панелі"
+
+["button/change"]
+  default = "Змінити"
+
+["button/change-passwd"]
+  default = "Змінити пароль"
+
+["button/copy"]
+  default = "Копіювати"
+
+["button/delete"]
+  default = "Видалити"
+
+["button/delete-account"]
+  default = "Видалити обліковий запис, усі сайти та всі дані"
+
+["button/delete-everything"]
+  default = "Так, видалити все"
+
+["button/delete-pageviews"]
+
+["button/disable-mfa"]
+  default = "Вимкнути MFA"
+
+["button/edit"]
+  default = "Редагувати"
+
+["button/enable-mfa"]
+  default = "Увімкнути MFA"
+
+["button/forgot-password"]
+  default = "Забули пароль?"
+
+["button/merge"]
+
+["button/preview"]
+
+["button/remove"]
+  default = "Видалити"
+
+["button/request-reset"]
+  default = "Запит на скидання пароля"
+
+["button/resend-email"]
+  default = "Повторно надіслати електронного листа"
+
+["button/reset-defaults"]
+  default = "Відновити налаштування за замовчуванням"
+
+["button/reset-password"]
+  default = "Скинути пароль"
+
+["button/run"]
+
+["button/save"]
+  default = "Зберегти"
+
+["button/save-default-view"]
+  default = "Зберегти перегляд за замовчуванням"
+
+["button/search"]
+
+["button/send-login-url"]
+  default = "Надіслати посилання для входу"
+
+["button/show"]
+
+["button/sign-in"]
+  default = "Увійти"
+
+["button/start-export"]
+  default = "Розпочати експорт"
+
+["button/start-import"]
+  default = "Розпочати імпорт"
+
+["button/submit"]
+  default = "Надіслати"
+
+["button/upload-ga-import"]
+
+["confirm/delete-user"]
+  default = "Видалити %(email)?"
+
+["dashboard/day-ago"]
+
+["dashboard/loading"]
+
+["dashboard/month-ago"]
+
+["dashboard/nothing-to-display"]
+  default = "Нічого показувати"
+
+["dashboard/pages/change"]
+
+["dashboard/pages/header"]
+  default = "Сторінок"
+
+["dashboard/pages/num-visits"]
+  default = "%(num-visits) із %(total-visits) показано відвідувань"
+
+["dashboard/pages/path"]
+  default = "Шлях"
+
+["dashboard/pages/title"]
+  default = "Заголовок"
+
+["dashboard/pages/visits"]
+  default = "Відвідувань"
+
+["dashboard/today"]
+  default = "Сьогодні"
+
+["dashboard/tooltip-event"]
+  default = "%(unique) кліків; %(clicks) загальна кількість кліків"
+
+["dashboard/totals/header"]
+  default = "Загальна кількість"
+
+["dashboard/totals/num-visits"]
+  default = "%(num-visits) відвідувань"
+
+["dashboard/week-ago"]
+
+["dashboard/yesterday"]
+  default = "Вчора"
+
+["data-collect/help/country"]
+  default = "Назва країни, наприклад Бельгія, Індонезія тощо."
+
+["data-collect/help/hits"]
+
+["data-collect/help/language"]
+
+["data-collect/help/referrer"]
+
+["data-collect/help/region"]
+
+["data-collect/help/sessions"]
+
+["data-collect/help/size"]
+  default = "Розмір екрану."
+
+["data-collect/help/user-agent"]
+
+["data-collect/label/country"]
+  default = "Країна"
+
+["data-collect/label/hits"]
+
+["data-collect/label/language"]
+  default = "Мова"
+
+["data-collect/label/referrer"]
+  default = "Референт"
+
+["data-collect/label/region"]
+  default = "Регіон"
+
+["data-collect/label/sessions"]
+  default = "Сеанси"
+
+["data-collect/label/size"]
+  default = "Розмір"
+
+["data-collect/label/user-agent"]
+
+["datepicker/keyboard"]
+
+["datepicker/month-next"]
+  default = "Наступний місяць"
+
+["datepicker/month-prev"]
+  default = "Попередній місяць"
+
+["dont-lock"]
+
+["email-report/daily"]
+
+["email-report/monthly"]
+
+["email-report/never"]
+
+["email-report/two-weeks"]
+
+["email-report/weekly"]
+
+["email/header"]
+  default = "Привіт там,"
+
+["email/password-reset"]
+  default = """
+Хтось (сподіваємось, ви) попросили скинути пароль у вашому обліковому записі.
+
+Ви можете це зробити тут:
+%(link)
+"""
+
+["email/reset-user-email-subject"]
+  default = "Скидання пароля для %(domain)"
+
+["email/signature"]
+
+["error/address-exists"]
+  default = "%(addr) вже існує"
+
+["error/could-not-read"]
+  default = "Не зміг прочитати як gzip: %(err)"
+
+["error/date-future"]
+
+["error/date-mismatch"]
+
+["error/date-past"]
+
+["error/email-exists"]
+
+["error/export-expired"]
+
+["error/incorrect-password"]
+  default = "Введений пароль невірний."
+
+["error/invalid-end-date"]
+  default = "Недійсна кінцева дата: %(date)"
+
+["error/invalid-start-date"]
+  default = "Недійсна початкова дата: %(date)"
+
+["error/load-url"]
+  default = "Не міг завантажити %(url): %(error)"
+
+["error/login-invalid"]
+  default = "Невірний логін"
+
+["error/login-no-password"]
+  default = "Не встановлено пароля на %(email); Будь ласка, скиньте його"
+
+["error/login-not-found"]
+  default = "Користувач %(email) не знайдено"
+
+["error/login-token-expired"]
+
+["error/login-wrong-pwd"]
+  default = "Неправильний пароль для %(email)"
+
+["error/merge-self"]
+
+["error/not-found"]
+  default = "Не знайдено"
+
+["error/password-does-not-match"]
+
+["error/reset-user-no-account"]
+
+["error/unknown-activation-token"]
+
+["event"]
+  default = "подія"
+
+["forgot-domain-help"]
+  default = "Надішліть список усіх доменів, пов’язаних із адресою електронної пошти."
+
+["header/access"]
+  default = "Доступ"
+
+["header/add-api-token"]
+
+["header/add-new-user"]
+  default = "Додати нового користувача"
+
+["header/allow-access"]
+  default = "Дозволити доступу"
+
+["header/api"]
+  default = "API"
+
+["header/api-tokens"]
+  default = "API tokens"
+
+["header/browsers"]
+  default = "Браузери"
+
+["header/change-code"]
+  default = "Змінити код сайту"
+
+["header/change-passwd"]
+  default = "Змінити пароль"
+
+["header/code"]
+  default = "Код"
+
+["header/copy-settings"]
+  default = "Налаштування копіювання"
+
+["header/created-at"]
+  default = "Створений у"
+
+["header/csv-format"]
+
+["header/dashboard"]
+  default = "Інформаційна панель"
+
+["header/data-collection"]
+  default = "Збір даних"
+
+["header/delete-account"]
+  default = "Видалити обліковий запис"
+
+["header/deleting"]
+
+["header/domain"]
+  default = "Домен"
+
+["header/domain-settings"]
+  default = "Налаштування домена"
+
+["header/edit-user"]
+  default = "Редагувати користувача %(email)"
+
+["header/email"]
+  default = "Електронна пошта"
+
+["header/export-or-import"]
+  default = "Експорт / імпорт"
+
+["header/export-to-csv"]
+
+["header/export-to-json"]
+
+["header/fewer-number"]
+
+["header/finished"]
+  default = "Завершено"
+
+["header/forgot-domain"]
+
+["header/forgot-password"]
+
+["header/format"]
+
+["header/hash"]
+
+["header/import-from-csv"]
+
+["header/import-from-ga"]
+
+["header/import-from-json"]
+
+["header/json-format"]
+
+["header/l10n"]
+  default = "Локалізація"
+
+["header/languages"]
+  default = "Мови"
+
+["header/last-10-exports"]
+  default = "Останні 10-ть експортів"
+
+["header/last-used-at"]
+
+["header/locations"]
+  default = "Місця"
+
+["header/locations-for"]
+  default = "Місця для %(country)"
+
+["header/manage-pageviews"]
+
+["header/merge-account"]
+
+["header/merging-to"]
+
+["header/mfa"]
+
+["header/n-hits"]
+
+["header/name"]
+  default = "Ім'я"
+
+["header/other-formats"]
+
+["header/pagination-cursor"]
+
+["header/passwd-mfa"]
+
+["header/path"]
+  default = "Шлях"
+
+["header/permissions"]
+  default = "Дозволи"
+
+["header/preferences"]
+  default = "Уподобання"
+
+["header/renaming"]
+
+["header/reset-password"]
+
+["header/settings"]
+  default = "Налаштування"
+
+["header/sign-in-at"]
+  default = "Увійдіть у %(name)"
+
+["header/site-settings"]
+  default = "Налаштування сайту"
+
+["header/sites"]
+  default = "Сайти"
+
+["header/size"]
+  default = "Розмір"
+
+["header/sizes"]
+  default = "Розміри"
+
+["header/start-pagination-cursor"]
+
+["header/started"]
+  default = "Розпочато"
+
+["header/systems"]
+  default = "Системи"
+
+["header/title"]
+  default = "Заголовок"
+
+["header/token"]
+  default = "Token"
+
+["header/toprefs"]
+
+["header/tracking"]
+  default = "Відстеження"
+
+["header/user-info"]
+  default = "Інформація користувача"
+
+["header/user-information"]
+  default = "Інформація користувача"
+
+["header/users"]
+  default = "Користувачі"
+
+["help/allow-embed"]
+
+["help/allow-visitor-counts"]
+
+["help/cfg-dashboard"]
+
+["help/code-access"]
+
+["help/configure-dashboard"]
+
+["help/custom-domain"]
+
+["help/custom-domain-cname"]
+
+["help/custom-domain-error"]
+
+["help/custom-domain-verified"]
+
+["help/data-retention"]
+
+["help/datepicker"]
+
+["help/domain-access"]
+
+["help/drag-reorder"]
+
+["help/email-reports"]
+
+["help/fewer-numbers"]
+
+["help/fewer-numbers-lock"]
+
+["help/for-the-following-countries"]
+
+["help/goatcounter-domain"]
+
+["help/ignore-ips"]
+
+["help/ignore-ips-2"]
+
+["help/locked-until"]
+
+["help/need-cities"]
+
+["help/new-user-email"]
+
+["help/new-user-email-confirm"]
+
+["help/no-undo"]
+
+["help/password-edit"]
+
+["help/password-new-user"]
+
+["help/public"]
+
+["help/save-default-view"]
+
+["help/turing-test"]
+
+["help/your-email"]
+
+["label/24-hour-clock"]
+
+["label/access-to-sites"]
+
+["label/add-new"]
+
+["label/all-sites"]
+
+["label/allow-visitor-counts"]
+
+["label/browser-stats"]
+
+["label/campaigns"]
+
+["label/change-code"]
+
+["label/clear-pageviews"]
+
+["label/code"]
+
+["label/csv-compress-format"]
+
+["label/current-passwd"]
+
+["label/custom-domain"]
+
+["label/dashboard-allow-embed"]
+
+["label/dashboard-public"]
+
+["label/data-retention"]
+
+["label/date-fmt"]
+
+["label/datepicker"]
+
+["label/delete-account-confirmation"]
+
+["label/email"]
+
+["label/email-address"]
+
+["label/email-reports"]
+
+["label/export-from-date"]
+
+["label/fewer-numbers"]
+
+["label/for-following-countries"]
+
+["label/goatcounter-domain"]
+
+["label/ignore-ips"]
+
+["label/lang"]
+
+["label/language-stats"]
+
+["label/loc-stats"]
+
+["label/lock-setting"]
+
+["label/mark-current"]
+
+["label/match-case"]
+
+["label/match-title"]
+
+["label/merge-account-confirmation"]
+
+["label/merge-to"]
+
+["label/mfa-token"]
+
+["label/new-code"]
+
+["label/new-password"]
+
+["label/new-password-confirm"]
+
+["label/pagination-cursor"]
+
+["label/password"]
+
+["label/paths"]
+
+["label/public-anyone"]
+
+["label/public-private"]
+
+["label/public-token"]
+
+["label/secret"]
+
+["label/secret-access"]
+
+["label/secret-token"]
+
+["label/set-default"]
+
+["label/size-desktop"]
+
+["label/size-desktophd"]
+
+["label/size-phones"]
+
+["label/size-stats"]
+
+["label/size-tablets"]
+
+["label/system-stats"]
+
+["label/theme"]
+
+["label/thousand-separator"]
+
+["label/timezone"]
+
+["label/topref"]
+
+["label/total-pageviews"]
+
+["label/turing-test"]
+
+["label/verifictation-token"]
+
+["label/week-start"]
+
+["label/your-email"]
+
+["label/your-site"]
+
+["label/zip-file"]
+
+["link/add-translation"]
+
+["link/api"]
+
+["link/api-docs"]
+
+["link/dashboard"]
+
+["link/generate-random"]
+
+["link/goto-path"]
+
+["link/import"]
+
+["link/manage-pageviews"]
+
+["link/merge-account"]
+
+["link/passwd-mfa"]
+
+["link/preferences"]
+
+["link/rm-account"]
+
+["link/set-from-browser"]
+
+["link/settings"]
+
+["link/show-less"]
+
+["link/show-more"]
+
+["link/sites"]
+
+["link/users"]
+
+["nav-bot/contact"]
+
+["nav-bot/contribute"]
+
+["nav-bot/docs"]
+
+["nav-bot/home"]
+
+["nav-bot/src"]
+
+["nav-dash/back"]
+
+["nav-dash/day"]
+
+["nav-dash/end-date"]
+
+["nav-dash/filter"]
+
+["nav-dash/filter-more-help"]
+
+["nav-dash/filter-tooltip"]
+
+["nav-dash/forward"]
+
+["nav-dash/half-year"]
+
+["nav-dash/hour"]
+
+["nav-dash/last"]
+
+["nav-dash/month"]
+
+["nav-dash/quarter"]
+
+["nav-dash/start-date"]
+
+["nav-dash/view-by"]
+
+["nav-dash/week"]
+
+["nav-dash/year"]
+
+["nav-fash/filter-less-help"]
+
+["new-paren"]
+
+["no-title"]
+
+["notify/add-one-thing"]
+
+["notify/api-token-created"]
+
+["notify/api-token-removed"]
+
+["notify/disabled-multi-factor-auth"]
+
+["notify/email-already-verified"]
+
+["notify/export-started-in-background"]
+
+["notify/import-ga-okay"]
+
+["notify/import-started-in-background"]
+
+["notify/login-after-password-reset"]
+
+["notify/multi-factor-auth-enabled"]
+
+["notify/need-email-verification-for-api"]
+
+["notify/no-user-for-token"]
+
+["notify/not-found"]
+
+["notify/password-changed"]
+
+["notify/reset-to-default"]
+
+["notify/reset-user-sent"]
+
+["notify/restored-previously-deleted-site"]
+
+["notify/saved"]
+
+["notify/sent-to-email"]
+
+["notify/settings-copied-to-site"]
+
+["notify/site-added"]
+
+["notify/site-removed"]
+
+["notify/started-background-process"]
+
+["notify/user-added"]
+
+["notify/user-removed"]
+
+["notify/users-edited"]
+
+["p/add-goatcounter-to-multiple-websites"]
+
+["p/add-multiple-accounts"]
+
+["p/additional-errors"]
+
+["p/all-sites"]
+
+["p/api-intro"]
+
+["p/change-code-request"]
+
+["p/change-email"]
+
+["p/collect-disabled"]
+
+["p/copy-settings-from-current-site"]
+
+["p/csv-file-format"]
+
+["p/delete-account"]
+
+["p/disable-mfa"]
+
+["p/enable-mfa"]
+
+["p/error"]
+
+["p/export-csv"]
+
+["p/export-from-date"]
+
+["p/export-process"]
+
+["p/have-mfa"]
+
+["p/import-ga"]
+
+["p/json-file-format"]
+
+["p/last-user"]
+
+["p/link-to-batch-rename"]
+
+["p/manage-batch-hits"]
+
+["p/manage-hits"]
+
+["p/merge-account"]
+
+["p/no-data"]
+
+["p/no-matches"]
+
+["p/notify-immediate-change"]
+
+["p/notify-pagination-cursor"]
+
+["p/notify-site-deletion"]
+
+["p/num-accounts"]
+
+["p/remove-site-confirm"]
+
+["p/remove-site-confirm-contact"]
+
+["p/remove-site-confirm-current"]
+
+["p/rm-hits-help"]
+
+["p/rm-pageview-match"]
+
+["p/setting-recovery-disabled-information"]
+
+["p/settings-all-sites"]
+
+["p/site-domain-link-to-page"]
+
+["p/text-data-retention"]
+
+["p/verify-email"]
+
+["page-ranking"]
+
+["scale-y"]
+
+["theme/dark"]
+
+["theme/light"]
+
+["theme/system"]
+
+["tooltip/change-period"]
+
+["top-nav/back"]
+
+["top-nav/dashboard"]
+
+["top-nav/documentation"]
+
+["top-nav/need-js"]
+
+["top-nav/public-link"]
+
+["top-nav/public-time"]
+
+["top-nav/settings"]
+
+["top-nav/sign-in"]
+
+["top-nav/sign-out"]
+
+["top-nav/sites"]
+
+["unknown"]
+
+["validate/bool"]
+
+["validate/color"]
+
+["validate/contains"]
+
+["validate/date"]
+
+["validate/domain"]
+
+["validate/email"]
+
+["validate/exclude"]
+
+["validate/hostname"]
+
+["validate/include"]
+
+["validate/int"]
+
+["validate/ip"]
+
+["validate/ipv4"]
+
+["validate/len-longer"]
+
+["validate/len-shorter"]
+
+["validate/need-one"]
+
+["validate/phone"]
+
+["validate/range-higher"]
+  default = "має бути %d або вище"
+
+["validate/range-lower"]
+  default = "має бути %d або нижче"
+
+["validate/required"]
+  default = "має бути встановлений"
+
+["validate/url"]
+  default = "має бути діючим (URL) посилання"
+
+["validate/utf8"]
+  default = "має бути UTF-8"
+
+["view not set"]
+
+["widget-setting/help/align"]
+
+["widget-setting/help/chart-style"]
+
+["widget-setting/help/no-events"]
+
+["widget-setting/help/page-size"]
+
+["widget-setting/help/ref-page-size"]
+
+["widget-setting/help/regions"]
+
+["widget-setting/label/align"]
+  default = "Align with pages"
+
+["widget-setting/label/chart-style"]
+  default = "Стиль діаграми"
+
+["widget-setting/label/no-events"]
+  default = "Виключити події"
+
+["widget-setting/label/page-size"]
+  default = "Розмір сторінки"
+
+["widget-setting/label/ref-page-size"]
+
+["widget-setting/label/regions"]
+  default = "Показати регіони"
+
+["widget-settings/bar-chart"]
+
+["widget-settings/line-chart"]
+  default = "Лінійна діаграма"
+
+["widget-settings/text-chart"]
+  default = "Текстова таблиця"
+
+["y-scale"]
+  default = "Y-axis шкала"

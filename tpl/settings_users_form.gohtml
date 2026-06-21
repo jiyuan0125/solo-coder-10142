@@ -1,0 +1,87 @@
+{{template "_backend_top.gohtml" .}}
+{{template "_settings_nav.gohtml" .}}
+
+{{define "access"}}
+	{{$all := eq (print .site) "all"}}
+	<label><input type="radio" name="access[{{.site}}]" value="r" {{if eq .v "r"}}checked{{end}}>
+		{{t .Context "label/read-only|Read only"}}</label>
+	<label><input type="radio" name="access[{{.site}}]" value="s" {{if eq .v "s"}}checked{{end}}>
+		{{t .Context "label/change-settings-limited|Can change settings, except site/user management"}}</label>
+	{{if $all}}
+	<label><input type="radio" name="access[{{.site}}]" value="a" {{if eq .v "a"}}checked{{end}}>
+		{{t .Context "label/full-access|Full access"}}</label>
+		{{if .superuser}}
+			<label><input type="radio" name="access[{{.site}}]" value="*" {{if eq .v "*"}}checked{{end}}>
+				{{t .Context "label/access-superuser|Full access, including server settings"}}</label>
+		{{end}}
+	{{end}}
+{{end}}
+
+<h2>{{if .Edit}}{{.T "header/edit-user|Edit user %(email)" .NewUser.Email}}{{else}}{{.T "header/add-new-user|Add a new user"}}{{end}}</h2>
+{{if .Error}}<div class="flash flash-e">{{.Error}}</div>{{end}}
+
+<form method="post" action="{{.Base}}{{if .Edit}}/settings/users/{{.NewUser.ID}}{{else}}/settings/users/add{{end}}" id="users-form" class="vertical">
+	<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+	<fieldset>
+		<legend>{{.T "header/user-information|User information"}}</legend>
+
+		<label for="email">{{.T "label/email|Email"}}</label>
+		<input type="text" autocomplete="new-password" id="email" name="email" placeholder="{{.T "label/email|Email"}}" value="{{.NewUser.Email}}">
+		{{validate "email" .Validate}}
+		{{if .GoatcounterCom}}
+			<span>{{.T "help/new-user-email-confirm|Email to login with; must be confirmed."}}</span>
+		{{else}}
+			<span>{{.T "help/new-user-email|Email to login with."}}</span>
+		{{end}}
+
+		<label for="password">{{.T "label/password|Password"}}</label>
+		<input type="password" autocomplete="new-password" id="password" name="password" placeholder="{{.T "label/password|Password"}}">
+		{{validate "password" .Validate}}
+		{{if .Edit}}
+			<span>{{.T "help/password-edit|Leave blank to keep it unchanged."}}</span>
+		{{else}}
+			<span>{{.T "help/password-new-user|Can be blank to send a password reset email."}}</span>
+		{{end}}
+	</fieldset>
+
+	<fieldset class="global-access">
+		<legend>{{.T "header/allow-access|Allow access"}}</legend>
+		{{template "access" (map
+			"Context"   .Context
+			"site"      "all"
+			"v"         (index .NewUser.Access "all")
+			"superuser" .User.AccessSuperuser
+		)}}
+	</fieldset>
+
+	<div id="full-access"></div>
+
+	{{/*
+	TODO: implement per-site access to; for now global access is fine.
+	<fieldset id="access-sites">
+		<legend>{{.T "header/allow-site-access|Allow access to sites"}} <sup><a href="#" id="per-site">{{.T "header/set-site-access|Set access per site"}}</a></sup></legend>
+
+		{{range $s := .Sites}}
+			<label><input type="checkbox" checked> {{$s.Display $.Context}}</label><br>
+			<div class="site-access">
+				{{template "access" $s.ID}}
+			</div>
+		{{end}}
+		<br>
+		<label><input type="checkbox" checked> {{.T "label/give-access-new-site|Give access to newly created sites"}}</label><br>
+		<div class="site-access">
+			{{template "access" "new"}}
+		</div>
+	</fieldset>
+	*/}}
+
+	{{if has_errors .Validate}}
+		<div class="flash flash-e"
+			style="position: fixed; bottom: 0; right: .5em; min-width: 20em; z-index: 5; text-align: left;">
+		{{.T "p/additional-errors|Additional errors"}}:{{.Validate.HTML}}</div>
+	{{end}}
+
+	<button type="submit">{{if .Edit}}{{.T "button/edit|Edit"}}{{else}}{{.T "button/add-new|Add new"}}{{end}}</button>
+</form>
+
+{{template "_backend_bottom.gohtml" .}}

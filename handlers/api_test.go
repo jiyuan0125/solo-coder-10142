@@ -1,0 +1,929 @@
+package handlers
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
+	"zgo.at/goatcounter/v2"
+	"zgo.at/goatcounter/v2/gctest"
+	"zgo.at/jfmt"
+	"zgo.at/json"
+	"zgo.at/zdb"
+	"zgo.at/zhttp"
+	"zgo.at/zstd/zbool"
+	"zgo.at/zstd/zint"
+	"zgo.at/zstd/zjson"
+	"zgo.at/zstd/ztest"
+	"zgo.at/zstd/ztime"
+	"zgo.at/zvalidate"
+)
+
+func newAPITest(ctx context.Context, t *testing.T,
+	method, path string, body io.Reader,
+	perm zint.Bitflag64,
+) (*http.Request, *httptest.ResponseRecorder) {
+
+	zhttp.DefaultDecoder = zhttp.NewDecoder(true, false)
+	token := goatcounter.APIToken{
+		SiteID:      Site(ctx).ID,
+		UserID:      User(ctx).ID,
+		Name:        "test",
+		Permissions: perm,
+		Sites:       goatcounter.SiteIDs{-1},
+	}
+	err := token.Insert(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	r, rr := newTest(ctx, method, path, body)
+	r.Header.Set("Authorization", "Bearer "+token.Token)
+	return r, rr
+}
+
+func TestAPIBasics(t *testing.T) {
+	t.Run("error", func(t *testing.T) {
+		t.Run("no-auth", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/test", nil, 0)
+
+			delete(r.Header, "Authorization")
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 401)
+
+			want := `{"error":"no Authorization header"}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("wrong-auth", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/test", nil, 0)
+
+			r.Header.Set("Authorization", r.Header.Get("Authorization")+"x")
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 401)
+
+			want := `{"error":"unknown token"}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("no-perm", func(t *testing.T) {
+			body := bytes.NewReader(zjson.MustMarshal(map[string]any{
+				"perm": goatcounter.APIPermExport | goatcounter.APIPermCount,
+			}))
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test", body, 0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 403)
+
+			want := `{"error":"requires 'count', 'export' permissions"}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("404", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/doesnt-exist", nil, 0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 404)
+
+			want := `{"error":"not found"}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("500", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test",
+				strings.NewReader(`{"status":500}`),
+				0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 500)
+
+			want := `{"error":"unexpected error code ‘`
+			if !strings.HasPrefix(rr.Body.String(), want) {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("invalid json", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test",
+				strings.NewReader(`{{{{`),
+				0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 400)
+
+			want := `{"error":"invalid JSON:`
+			if !strings.HasPrefix(rr.Body.String(), want) {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("panic", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test",
+				strings.NewReader(`{"panic":true}`),
+				0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 500)
+
+			want := `{"error":"unexpected error code ‘`
+			if !strings.HasPrefix(rr.Body.String(), want) {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("ct", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test", nil, 0)
+
+			r.Header.Set("Content-Type", "text/html")
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 415)
+
+			want := `<!DOCTYPE html>`
+			if !strings.HasPrefix(rr.Body.String(), want) {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("validate", func(t *testing.T) {
+			v := zvalidate.New()
+			v.Required("r", "")
+			v.Email("e", "asd")
+
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test",
+				bytes.NewReader(zjson.MustMarshal(map[string]any{
+					"validate": v,
+				})),
+				0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 400)
+
+			want := `{"errors":{"e":["must be a valid email address"],"r":["must be set"]}}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+
+		t.Run("unknown JSON", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/test",
+				strings.NewReader(`{"unknown":"aa"}`), 0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 400)
+
+			want := `{"error":"unknown parameter: \"unknown\""}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+		t.Run("unknown query", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/test?unknown=1", nil, 0)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, 400)
+
+			want := `{"error":"unknown parameter: \"unknown\""}`
+			if rr.Body.String() != want {
+				t.Errorf("\nwant: %s\ngot:  %s\n", want, rr.Body.String())
+			}
+		})
+	})
+
+	t.Run("context", func(t *testing.T) {
+		ctx := gctest.DB(t)
+		r, rr := newAPITest(ctx, t, "POST", "/api/v0/test",
+			bytes.NewReader(zjson.MustMarshal(map[string]any{
+				"context": true,
+			})),
+			0)
+
+		newBackend(ctx).ServeHTTP(rr, r)
+		ztest.Code(t, rr, 200)
+	})
+
+	t.Run("no-perm", func(t *testing.T) {
+		ctx := gctest.DB(t)
+		r, rr := newAPITest(ctx, t, "POST", "/api/v0/test", nil, 0)
+
+		newBackend(ctx).ServeHTTP(rr, r)
+		ztest.Code(t, rr, 200)
+	})
+
+	t.Run("check-perm", func(t *testing.T) {
+		ctx := gctest.DB(t)
+
+		body := bytes.NewReader(zjson.MustMarshal(map[string]any{
+			"perm": goatcounter.APIPermExport | goatcounter.APIPermCount,
+		}))
+		r, rr := newAPITest(ctx, t, "POST", "/api/v0/test", body,
+			goatcounter.APIPermExport|goatcounter.APIPermCount)
+
+		newBackend(ctx).ServeHTTP(rr, r)
+		ztest.Code(t, rr, 200)
+	})
+
+}
+
+func TestAPICount(t *testing.T) {
+	empty := `
+		hit_id  site_id  path  title  event  browser  system  session  ref  ref_s  width  loc  first  created_at
+
+		site_id  path  bot  user_agent  created_at
+	`
+	tests := []struct {
+		body     APICountRequest
+		wantCode int
+		wantRet  string
+		want     string
+	}{
+		{APICountRequest{}, 400, `{"error":"no hits"}`, empty},
+
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/foo"},
+				{Path: "/bar", CreatedAt: time.Date(2020, 1, 18, 14, 42, 0, 0, time.UTC)},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo         0                       00112233445566778899aabbccddef01       o      NULL        1      2020-06-18 14:42:00
+			2       1        /bar         0                       00112233445566778899aabbccddef01       o      NULL        1      2020-01-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// Fill in most fields.
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/foo", Title: "A", Ref: "y", UserAgent: "Mozilla/5.0 (Linux) Firefox/1", Location: "ET", Size: goatcounter.Floats{42, 666, 2}},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser    system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo  A      0      Firefox 1  Linux   00112233445566778899aabbccddef01  y    o      42     ET   1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// Width
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/a", Size: goatcounter.Floats{42, 666, 2}},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /a           0                       00112233445566778899aabbccddef01       o      42          1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/a", Size: goatcounter.Floats{42, 666}},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /a           0                       00112233445566778899aabbccddef01       o      42          1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/a", Size: goatcounter.Floats{42}},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /a           0                       00112233445566778899aabbccddef01       o      42          1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// Event
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Event: zbool.Bool(true), Path: "/foo", Title: "A", Ref: "y", UserAgent: "Mozilla/5.0 (Linux) Firefox/1", Location: "ET", Size: goatcounter.Floats{42, 666, 2}},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser    system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        foo   A      1      Firefox 1  Linux   00112233445566778899aabbccddef01  y    o      42     ET   1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// Calculate session from IP+UserAgent
+		{
+			APICountRequest{Hits: []APICountRequestHit{
+				{Path: "/foo", UserAgent: "Mozilla/5.0 (Linux) Firefox/1", IP: "51.171.91.33"},
+				{Path: "/foo", UserAgent: "Mozilla/5.0 (Linux) Firefox/1", IP: "66.66.66.67"},
+				{Path: "/foo", UserAgent: "Mozilla/5.0 (Linux) Firefox/1", IP: "51.171.91.33"},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser    system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo         0      Firefox 1  Linux   00112233445566778899aabbccddef01       o      NULL   IE   1      2020-06-18 14:42:00
+			2       1        /foo         0      Firefox 1  Linux   00112233445566778899aabbccddef02       o      NULL   US   1      2020-06-18 14:42:00
+			3       1        /foo         0      Firefox 1  Linux   00112233445566778899aabbccddef01       o      NULL   IE   0      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// UserSessionID
+		{
+			APICountRequest{Hits: []APICountRequestHit{
+				{Path: "/foo", Session: "a"},
+				{Path: "/foo", Session: "b"},
+				{Path: "/foo", Session: "a"},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo         0                       00112233445566778899aabbccddef01       o      NULL        1      2020-06-18 14:42:00
+			2       1        /foo         0                       00112233445566778899aabbccddef02       o      NULL        1      2020-06-18 14:42:00
+			3       1        /foo         0                       00112233445566778899aabbccddef01       o      NULL        0      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// Don't persist if session is blank.
+		{
+			APICountRequest{Hits: []APICountRequestHit{
+				{Path: "/foo", Session: "a"},
+				{Path: "/foo"},
+			}},
+			400, `{"errors":{"1":"session or browser/IP not set; use no_sessions if you don't want to track unique visits"}}`, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo         0                       00112233445566778899aabbccddef01       o      NULL        1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+
+		// Filter bots
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/foo"},
+				{Path: "/foo", UserAgent: "curl/7.8"},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo         0                       00112233445566778899aabbccddef01       o      NULL        1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			1        /foo  7    curl/7.8    2020-06-18 14:42:00
+			`,
+		},
+
+		// Filter IP
+		{
+			APICountRequest{NoSessions: true, Hits: []APICountRequestHit{
+				{Path: "/foo", IP: "1.1.1.1"},
+			}},
+			202, respOK, empty,
+		},
+		{
+			APICountRequest{NoSessions: true, Filter: []string{"ip"}, Hits: []APICountRequestHit{
+				{Path: "/foo", IP: "1.1.1.1"},
+			}},
+			202, respOK, empty,
+		},
+		{
+			APICountRequest{NoSessions: true, Filter: []string{}, Hits: []APICountRequestHit{
+				{Path: "/foo", IP: "1.2.3.4"},
+			}},
+			202, respOK, `
+			hit_id  site_id  path  title  event  browser  system  session                           ref  ref_s  width  loc  first  created_at
+			1       1        /foo         0                       00112233445566778899aabbccddef01       o      NULL   AU   1      2020-06-18 14:42:00
+
+			site_id  path  bot  user_agent  created_at
+			`,
+		},
+	}
+
+	perm := goatcounter.APIPermCount
+
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 14:42:00"))
+
+			site := Site(ctx)
+			site.Settings.Collect.Set(goatcounter.CollectHits)
+			site.Settings.IgnoreIPs = []string{"1.1.1.1"}
+			err := site.Update(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			r, rr := newAPITest(ctx, t, "POST", "/api/v0/count",
+				bytes.NewReader(zjson.MustMarshal(tt.body)), perm)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+			if d := ztest.Diff(rr.Body.String(), tt.wantRet, ztest.DiffJSON); d != "" {
+				t.Errorf("\nout:  %s\nwant: %s", rr.Body.String(), tt.wantRet)
+			}
+
+			gctest.StoreHits(ctx, t, false)
+
+			tt.want = strings.TrimSpace(strings.ReplaceAll(tt.want, "\t", ""))
+			have := strings.TrimSpace(zdb.DumpString(ctx, `
+				select
+					hits.hit_id,
+					hits.site_id,
+
+					paths.path,
+					paths.title,
+					paths.event,
+
+					browsers.name || ' ' || browsers.version as browser,
+					systems.name  || ' ' || systems.version  as system,
+
+					hits.session,
+					refs.ref,
+					refs.ref_scheme as ref_s,
+					hits.width,
+					hits.location as loc,
+					hits.first_visit as first,
+					hits.created_at
+				from hits
+				join paths          using (path_id)
+				left join refs      using (ref_id)
+				join browsers using (browser_id)
+				join systems  using (system_id)
+				order by hit_id asc
+			`))
+			have += "\n\n" + zdb.DumpString(ctx, `select * from bots`)
+
+			if d := ztest.Diff(have, tt.want); d != "" {
+				t.Error(d)
+			}
+		})
+	}
+}
+
+func TestAPISitesCreate(t *testing.T) {
+	tests := []struct {
+		serve    bool
+		body     string
+		wantCode int
+		want     func(context.Context, *goatcounter.Site)
+	}{
+		{false, `{"code":"apitest"}`, 200, func(ctx context.Context, s *goatcounter.Site) {
+			s.Code = "apitest"
+			s.Parent = new(goatcounter.SiteID(1))
+		}},
+		{true, `{"cname":"apitest.localhost"}`, 200, func(ctx context.Context, s *goatcounter.Site) {
+			s.Cname = new("apitest.localhost")
+			s.Parent = new(goatcounter.SiteID(1))
+			s.CnameSetupAt = new(ztime.Now(ctx))
+		}},
+
+		// Ignore plan.
+		{false, `{"code":"apitest"}`, 200, func(ctx context.Context, s *goatcounter.Site) {
+			s.Code = "apitest"
+			s.Parent = new(goatcounter.SiteID(1))
+		}},
+		{true, `{"cname":"apitest.localhost"}`, 200, func(ctx context.Context, s *goatcounter.Site) {
+			s.Cname = new("apitest.localhost")
+			s.Parent = new(goatcounter.SiteID(1))
+			s.CnameSetupAt = new(ztime.Now(ctx))
+		}},
+	}
+
+	perm := goatcounter.APIPermSiteCreate | goatcounter.APIPermSiteRead | goatcounter.APIPermSiteUpdate
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:13:14"))
+
+			goatcounter.Config(ctx).GoatcounterCom = !tt.serve
+
+			r, rr := newAPITest(ctx, t, "PUT", "/api/v0/sites",
+				strings.NewReader(tt.body), perm)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+
+			var retSite goatcounter.Site
+			d := json.NewDecoder(rr.Body)
+			d.AllowReadonlyFields()
+			err := d.Decode(&retSite)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var w goatcounter.Site
+			w.Defaults(ctx)
+			tt.want(ctx, &w)
+
+			w.ID = retSite.ID
+			if tt.serve {
+				retSite.Code = w.Code
+			}
+			retSite.CreatedAt = w.CreatedAt
+			retSite.FirstHitAt = w.FirstHitAt
+			retSite.UpdatedAt = nil
+
+			got := string(zjson.MustMarshalIndent(retSite, "", "  "))
+			want := string(zjson.MustMarshalIndent(w, "", "  "))
+			if d := ztest.Diff(got, want); d != "" {
+				t.Error(d)
+			}
+		})
+	}
+}
+
+func TestAPISitesUpdate(t *testing.T) {
+	tests := []struct {
+		serve        bool
+		method, body string
+		wantCode     int
+		want         func(s *goatcounter.Site)
+	}{
+		{false, "PATCH", `{}`, 200, func(s *goatcounter.Site) {
+			s.Code = "gctest"
+			s.Cname = new("gctest.localhost")
+		}},
+		{false, "POST", `{}`, 200, func(s *goatcounter.Site) {
+			s.Code = "gctest"
+			//s.Cname = new("gctest.localhost")
+		}},
+	}
+
+	perm := goatcounter.APIPermSiteCreate | goatcounter.APIPermSiteRead | goatcounter.APIPermSiteUpdate
+	for _, tt := range tests {
+		t.Run("", func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:13:14"))
+			goatcounter.Config(ctx).GoatcounterCom = !tt.serve
+
+			site := Site(ctx)
+
+			r, rr := newAPITest(ctx, t, tt.method, fmt.Sprintf("/api/v0/sites/%d", site.ID),
+				strings.NewReader(tt.body), perm)
+
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+
+			var retSite goatcounter.Site
+			d := json.NewDecoder(rr.Body)
+			d.AllowReadonlyFields()
+			err := d.Decode(&retSite)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var w goatcounter.Site
+			w.Defaults(ctx)
+			tt.want(&w)
+
+			w.ID = retSite.ID
+			retSite.CreatedAt = w.CreatedAt
+			retSite.FirstHitAt = w.FirstHitAt
+			retSite.UpdatedAt = nil
+
+			got := string(zjson.MustMarshalIndent(retSite, "", "  "))
+			want := string(zjson.MustMarshalIndent(w, "", "  "))
+			if d := ztest.Diff(got, want); d != "" {
+				t.Error(d)
+			}
+		})
+	}
+}
+
+func TestAPIPaths(t *testing.T) {
+	many := func(ctx context.Context, t *testing.T) {
+		p := make(goatcounter.Paths, 50)
+		for i := range p {
+			c := strconv.Itoa(i + 1)
+			p[i].Site = 1
+			p[i].Path = fmt.Sprintf("/%02s", c)
+			p[i].Title = c + " - " + c
+			err := p[i].GetOrInsert(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+
+	tests := []struct {
+		name     string
+		setup    func(context.Context, *testing.T)
+		query    string
+		wantCode int
+		want     string
+	}{
+		{"no paths",
+			nil, "", 200, `{"more": false, "paths": []}`},
+
+		{"works",
+			func(ctx context.Context, t *testing.T) {
+				for _, p := range []goatcounter.Path{
+					{Site: 1, Path: "/a", Title: "Hello"},
+				} {
+					err := p.GetOrInsert(ctx)
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+			}, "", 200, `{
+            "more": false,
+            "paths": [
+                {"event": false, "id": 1, "path": "/a", "title": "Hello"}
+            ]}`,
+		},
+
+		{"paginates",
+			func(ctx context.Context, t *testing.T) {
+				many(ctx, t)
+			}, "", 200, `{
+			"more": true,
+			"paths": [
+				{"event": false, "id": 1, "path": "/01", "title": "1 - 1"},
+				{"event": false, "id": 2, "path": "/02", "title": "2 - 2"},
+				{"event": false, "id": 3, "path": "/03", "title": "3 - 3"},
+				{"event": false, "id": 4, "path": "/04", "title": "4 - 4"},
+				{"event": false, "id": 5, "path": "/05", "title": "5 - 5"},
+				{"event": false, "id": 6, "path": "/06", "title": "6 - 6"},
+				{"event": false, "id": 7, "path": "/07", "title": "7 - 7"},
+				{"event": false, "id": 8, "path": "/08", "title": "8 - 8"},
+				{"event": false, "id": 9, "path": "/09", "title": "9 - 9"},
+				{"event": false, "id": 10, "path": "/10", "title": "10 - 10"},
+				{"event": false, "id": 11, "path": "/11", "title": "11 - 11"},
+				{"event": false, "id": 12, "path": "/12", "title": "12 - 12"},
+				{"event": false, "id": 13, "path": "/13", "title": "13 - 13"},
+				{"event": false, "id": 14, "path": "/14", "title": "14 - 14"},
+				{"event": false, "id": 15, "path": "/15", "title": "15 - 15"},
+				{"event": false, "id": 16, "path": "/16", "title": "16 - 16"},
+				{"event": false, "id": 17, "path": "/17", "title": "17 - 17"},
+				{"event": false, "id": 18, "path": "/18", "title": "18 - 18"},
+				{"event": false, "id": 19, "path": "/19", "title": "19 - 19"},
+				{"event": false, "id": 20, "path": "/20", "title": "20 - 20"}
+			]}`,
+		},
+
+		{"paginates",
+			func(ctx context.Context, t *testing.T) {
+				many(ctx, t)
+			}, "after=19&limit=5", 200, `{
+			"more": true,
+			"paths": [
+				{"event": false, "id": 20, "path": "/20", "title": "20 - 20"},
+				{"event": false, "id": 21, "path": "/21", "title": "21 - 21"},
+				{"event": false, "id": 22, "path": "/22", "title": "22 - 22"},
+				{"event": false, "id": 23, "path": "/23", "title": "23 - 23"},
+				{"event": false, "id": 24, "path": "/24", "title": "24 - 24"}
+			]}`,
+		},
+
+		{"paginates at end",
+			func(ctx context.Context, t *testing.T) {
+				many(ctx, t)
+			}, "after=45&limit=5", 200, `{
+			"more": false,
+			"paths": [
+				{"event": false, "id": 46, "path": "/46", "title": "46 - 46"},
+				{"event": false, "id": 47, "path": "/47", "title": "47 - 47"},
+				{"event": false, "id": 48, "path": "/48", "title": "48 - 48"},
+				{"event": false, "id": 49, "path": "/49", "title": "49 - 49"},
+				{"event": false, "id": 50, "path": "/50", "title": "50 - 50"}
+			]}`,
+		},
+
+		{"after higher than result",
+			func(ctx context.Context, t *testing.T) {
+				many(ctx, t)
+			}, "after=50&limit=5", 200, `{
+			"more": false,
+			"paths": []}`,
+		},
+	}
+
+	perm := goatcounter.APIPermStats
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:13:14"))
+			if tt.setup != nil {
+				tt.setup(ctx, t)
+			}
+
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/paths?"+tt.query, nil, perm)
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+
+			if d := ztest.Diff(rr.Body.String(), tt.want, ztest.DiffJSON); d != "" {
+				t.Error(d)
+			}
+		})
+	}
+}
+
+func TestAPIHits(t *testing.T) {
+	many := func(ctx context.Context, t *testing.T) {
+		h := make(goatcounter.Hits, 50)
+		for i := range h {
+			c := strconv.Itoa(i + 1)
+			h[i].Path = "/" + c
+			h[i].Site = 1
+			h[i].Title = "title - " + c
+			h[i].FirstVisit = true
+		}
+
+		gctest.StoreHits(ctx, t, false, h...)
+	}
+
+	tests := []struct {
+		name     string
+		query    string
+		wantCode int
+		setup    func(context.Context, *testing.T)
+	}{
+		{"no hits", "", 200, nil},
+		{"works", "limit=3", 200,
+			func(ctx context.Context, t *testing.T) { many(ctx, t) }},
+		{"exclude", "limit=1&exclude_paths=50,49&daily=true&start=2020-06-17&end=2020-06-19", 200,
+			func(ctx context.Context, t *testing.T) { many(ctx, t) }},
+		{"include", "limit=1&exclude_paths=&include_paths=10&daily=true&start=2020-06-17&end=2020-06-19", 200,
+			func(ctx context.Context, t *testing.T) { many(ctx, t) }},
+		{"include by name", "path_by_name=true&limit=1&exclude_paths=&include_paths=/10&daily=true&start=2020-06-17&end=2020-06-19", 200,
+			func(ctx context.Context, t *testing.T) { many(ctx, t) }},
+	}
+
+	perm := goatcounter.APIPermStats
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:13:14"))
+			if tt.setup != nil {
+				tt.setup(ctx, t)
+			}
+
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/stats/hits?"+tt.query, nil, perm)
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+
+			want := string(ztest.Read(t, "testdata/api-hits-"+strings.ReplaceAll(tt.name, " ", "-")+".json"))
+			if d := ztest.Diff(rr.Body.String(), want, ztest.DiffJSON); d != "" {
+				t.Error(d)
+				j, _ := jfmt.NewFormatter(100, "", "   ").FormatString(rr.Body.String())
+				t.Log("\nhave:\n" + j)
+			}
+		})
+	}
+}
+
+func TestAPIStats(t *testing.T) {
+	many := func(ctx context.Context, t *testing.T) {
+		h := make(goatcounter.Hits, 50)
+		for i := range h {
+			c := strconv.Itoa(i + 1)
+			h[i].Path = "/" + c
+			h[i].Site = 1
+			h[i].Title = "title - " + c
+			h[i].FirstVisit = true
+			if i < 20 || i%2 == 0 {
+				h[i].UserAgentHeader = fmt.Sprintf(
+					"Mozilla/5.0 (X11; Linux x86_64; rv:%[1]d.0) Gecko/20100101 Firefox/%[1]d.0", i)
+			} else {
+				h[i].UserAgentHeader = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+					"(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
+			}
+		}
+
+		gctest.StoreHits(ctx, t, false, h...)
+	}
+
+	tests := []struct {
+		name     string
+		page     string
+		query    string
+		wantCode int
+		setup    func(context.Context, *testing.T)
+		want     string
+	}{
+		{"no hits", "browsers", "", 200, nil, `{"more": false, "stats": []}`},
+
+		{"works", "browsers", "", 200,
+			func(ctx context.Context, t *testing.T) { many(ctx, t) },
+			`{
+				"more": false,
+				"stats": [
+					{"count": 35, "id": "Firefox", "name": "Firefox"},
+					{"count": 15, "id": "Chrome", "name": "Chrome"}
+				]
+			}`},
+	}
+
+	perm := goatcounter.APIPermStats
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:13:14"))
+			if tt.setup != nil {
+				tt.setup(ctx, t)
+			}
+
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/stats/"+tt.page+"?"+tt.query, nil, perm)
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+
+			if d := ztest.Diff(rr.Body.String(), tt.want, ztest.DiffJSON); d != "" {
+				t.Error(d)
+			}
+		})
+	}
+}
+
+func TestAPIStatsDetail(t *testing.T) {
+	many := func(ctx context.Context, t *testing.T) {
+		h := make(goatcounter.Hits, 50)
+		for i := range h {
+			c := strconv.Itoa(i + 1)
+			h[i].Path = "/" + c
+			h[i].Site = 1
+			h[i].Title = "title - " + c
+			h[i].FirstVisit = true
+			if i < 20 || i%2 == 0 {
+				h[i].UserAgentHeader = fmt.Sprintf(
+					"Mozilla/5.0 (X11; Linux x86_64; rv:%[1]d.0) Gecko/20100101 Firefox/%[1]d.0", i)
+			} else {
+				h[i].UserAgentHeader = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+					"(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
+			}
+		}
+
+		gctest.StoreHits(ctx, t, false, h...)
+	}
+
+	tests := []struct {
+		name     string
+		page     string
+		query    string
+		wantCode int
+		setup    func(context.Context, *testing.T)
+		want     string
+	}{
+		{"no hits", "browsers/Firefox", "", 200, nil, `{"more": false, "stats": []}`},
+
+		{"works", "browsers/Firefox", "limit=3", 200,
+			func(ctx context.Context, t *testing.T) { many(ctx, t) },
+			`{
+				"more": true,
+				"stats": [
+					{"count": 1, "name": "Firefox 0"},
+					{"count": 1, "name": "Firefox 1"},
+					{"count": 1, "name": "Firefox 10"}
+				]
+			}`},
+	}
+
+	perm := goatcounter.APIPermStats
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := gctest.DB(t)
+			ctx = ztime.WithNow(ctx, ztime.FromString("2020-06-18 12:13:14"))
+			if tt.setup != nil {
+				tt.setup(ctx, t)
+			}
+
+			r, rr := newAPITest(ctx, t, "GET", "/api/v0/stats/"+tt.page+"?"+tt.query, nil, perm)
+			newBackend(ctx).ServeHTTP(rr, r)
+			ztest.Code(t, rr, tt.wantCode)
+
+			if d := ztest.Diff(rr.Body.String(), tt.want, ztest.DiffJSON); d != "" {
+				t.Error(d)
+			}
+		})
+	}
+}

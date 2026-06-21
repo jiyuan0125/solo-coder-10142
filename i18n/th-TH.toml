@@ -1,0 +1,970 @@
+[__meta__]
+  language = "th-TH"
+  maintainers = []
+  modified = 2024-07-03
+
+["button/add-new"]
+  default = "เพิ่มใหม่"
+
+["button/add-user"]
+  default = "เพิ่มยูเซอร์ใหม่"
+
+["button/cfg-dashboard"]
+  default = "ปรับแต่งแดชบอร์ดเลย์เอาท์"
+
+["button/change"]
+  default = "เปลี่ยน"
+
+["button/change-passwd"]
+  default = "เปลี่ยนรหัสผ่าน"
+
+["button/copy"]
+  default = "คัดลอก"
+
+["button/delete"]
+  default = "ลบ"
+
+["button/delete-account"]
+  default = "ลบบัญชี ไซท์ทั้งหมด และข้อมูลทั้งหมด"
+
+["button/delete-everything"]
+  default = "ใช่ ลบทุกอย่าง"
+
+["button/delete-pageviews"]
+
+["button/disable-mfa"]
+  default = "ปิดการใช้งาน MFA"
+
+["button/edit"]
+  default = "แก้ไข"
+
+["button/enable-mfa"]
+  default = "เปิดการใช้งาน MFA"
+
+["button/forgot-password"]
+  default = "ลืมรหัสผ่าน?"
+
+["button/merge"]
+
+["button/preview"]
+
+["button/remove"]
+  default = "ลบ"
+
+["button/request-reset"]
+  default = "ร้องขอการรีเซ็ตรหัสผ่าน"
+
+["button/resend-email"]
+  default = "ส่งอีเมลใหม่อีกครั้ง"
+
+["button/reset-defaults"]
+  default = "รีเซ็ตค่าเริ่มต้น"
+
+["button/reset-password"]
+  default = "รีเซ็ตรหัสผ่าน"
+
+["button/run"]
+
+["button/save"]
+  default = "บันทึก"
+
+["button/save-default-view"]
+  default = "บันทึกมุมมองเริ่มต้น"
+
+["button/search"]
+
+["button/send-login-url"]
+  default = "ส่ง URL ล็อกอิน"
+
+["button/show"]
+
+["button/sign-in"]
+  default = "เข้าสู่ระบบ"
+
+["button/start-export"]
+  default = "เริ่มส่งออก"
+
+["button/start-import"]
+  default = "เริ่มนำเข้า"
+
+["button/submit"]
+  default = "ส่ง"
+
+["button/upload-ga-import"]
+
+["confirm/delete-user"]
+  default = "ลบ %(email)?"
+
+["dashboard/day-ago"]
+
+["dashboard/loading"]
+
+["dashboard/month-ago"]
+
+["dashboard/nothing-to-display"]
+  default = "ไม่มีอะไรให้แสดง"
+
+["dashboard/pages/change"]
+
+["dashboard/pages/header"]
+  default = "เพจ"
+
+["dashboard/pages/num-visits"]
+
+["dashboard/pages/path"]
+
+["dashboard/pages/title"]
+
+["dashboard/pages/visits"]
+  default = "เยี่ยมชม"
+
+["dashboard/today"]
+  default = "วันนี้"
+
+["dashboard/tooltip-event"]
+
+["dashboard/totals/header"]
+  default = "รวม"
+
+["dashboard/totals/num-visits"]
+  default = "%(num-visits) เยี่ยมชม"
+
+["dashboard/week-ago"]
+
+["dashboard/yesterday"]
+  default = "เมื่อวาน"
+
+["data-collect/help/country"]
+
+["data-collect/help/hits"]
+
+["data-collect/help/language"]
+
+["data-collect/help/referrer"]
+
+["data-collect/help/region"]
+
+["data-collect/help/sessions"]
+
+["data-collect/help/size"]
+  default = "ขนาดหน้าจอ"
+
+["data-collect/help/user-agent"]
+
+["data-collect/label/country"]
+  default = "ประเทศ"
+
+["data-collect/label/hits"]
+
+["data-collect/label/language"]
+  default = "ภาษา"
+
+["data-collect/label/referrer"]
+
+["data-collect/label/region"]
+  default = "ภูมิภาค"
+
+["data-collect/label/sessions"]
+
+["data-collect/label/size"]
+  default = "ขนาด"
+
+["data-collect/label/user-agent"]
+
+["datepicker/keyboard"]
+
+["datepicker/month-next"]
+  default = "เดือนถัดไป"
+
+["datepicker/month-prev"]
+  default = "เดือนก่อน"
+
+["dont-lock"]
+
+["email-report/daily"]
+
+["email-report/monthly"]
+
+["email-report/never"]
+
+["email-report/two-weeks"]
+
+["email-report/weekly"]
+
+["email/header"]
+
+["email/password-reset"]
+
+["email/reset-user-email-subject"]
+
+["email/signature"]
+
+["error/address-exists"]
+
+["error/could-not-read"]
+
+["error/date-future"]
+
+["error/date-mismatch"]
+
+["error/date-past"]
+
+["error/email-exists"]
+
+["error/export-expired"]
+
+["error/incorrect-password"]
+
+["error/invalid-end-date"]
+
+["error/invalid-start-date"]
+
+["error/load-url"]
+
+["error/login-invalid"]
+
+["error/login-no-password"]
+
+["error/login-not-found"]
+
+["error/login-token-expired"]
+
+["error/login-wrong-pwd"]
+
+["error/merge-self"]
+
+["error/not-found"]
+  default = "ไม่พบ"
+
+["error/password-does-not-match"]
+
+["error/reset-user-no-account"]
+
+["error/unknown-activation-token"]
+
+["event"]
+
+["forgot-domain-help"]
+
+["header/access"]
+
+["header/add-api-token"]
+
+["header/add-new-user"]
+
+["header/allow-access"]
+
+["header/api"]
+
+["header/api-tokens"]
+
+["header/browsers"]
+  default = "เบราว์เซอร์"
+
+["header/change-code"]
+
+["header/change-passwd"]
+
+["header/code"]
+
+["header/copy-settings"]
+
+["header/created-at"]
+
+["header/csv-format"]
+
+["header/dashboard"]
+  default = "แดชบอร์ด"
+
+["header/data-collection"]
+
+["header/delete-account"]
+
+["header/deleting"]
+
+["header/domain"]
+
+["header/domain-settings"]
+
+["header/edit-user"]
+
+["header/email"]
+
+["header/export-or-import"]
+
+["header/export-to-csv"]
+
+["header/export-to-json"]
+
+["header/fewer-number"]
+
+["header/finished"]
+
+["header/forgot-domain"]
+
+["header/forgot-password"]
+
+["header/format"]
+
+["header/hash"]
+
+["header/import-from-csv"]
+
+["header/import-from-ga"]
+
+["header/import-from-json"]
+
+["header/json-format"]
+
+["header/l10n"]
+
+["header/languages"]
+  default = "ภาษา"
+
+["header/last-10-exports"]
+
+["header/last-used-at"]
+
+["header/locations"]
+  default = "ตำแหน่ง"
+
+["header/locations-for"]
+
+["header/manage-pageviews"]
+
+["header/merge-account"]
+
+["header/merging-to"]
+
+["header/mfa"]
+
+["header/n-hits"]
+
+["header/name"]
+  default = "ชื่อ"
+
+["header/other-formats"]
+
+["header/pagination-cursor"]
+
+["header/passwd-mfa"]
+
+["header/path"]
+
+["header/permissions"]
+
+["header/preferences"]
+
+["header/renaming"]
+
+["header/reset-password"]
+
+["header/settings"]
+  default = "ตั้งค่า"
+
+["header/sign-in-at"]
+  default = "เข้าสู่ระบบด้วย %(name)"
+
+["header/site-settings"]
+
+["header/sites"]
+
+["header/size"]
+  default = "ขนาด"
+
+["header/sizes"]
+  default = "ขนาด"
+
+["header/start-pagination-cursor"]
+
+["header/started"]
+
+["header/systems"]
+  default = "ระบบ"
+
+["header/title"]
+
+["header/token"]
+
+["header/toprefs"]
+
+["header/tracking"]
+
+["header/user-info"]
+
+["header/user-information"]
+
+["header/users"]
+
+["help/allow-embed"]
+
+["help/allow-visitor-counts"]
+
+["help/cfg-dashboard"]
+
+["help/code-access"]
+
+["help/configure-dashboard"]
+
+["help/custom-domain"]
+
+["help/custom-domain-cname"]
+
+["help/custom-domain-error"]
+
+["help/custom-domain-verified"]
+
+["help/data-retention"]
+
+["help/datepicker"]
+
+["help/domain-access"]
+
+["help/drag-reorder"]
+
+["help/email-reports"]
+
+["help/fewer-numbers"]
+
+["help/fewer-numbers-lock"]
+
+["help/for-the-following-countries"]
+
+["help/goatcounter-domain"]
+
+["help/ignore-ips"]
+
+["help/ignore-ips-2"]
+
+["help/locked-until"]
+
+["help/need-cities"]
+
+["help/new-user-email"]
+
+["help/new-user-email-confirm"]
+
+["help/no-undo"]
+
+["help/password-edit"]
+
+["help/password-new-user"]
+
+["help/public"]
+
+["help/save-default-view"]
+
+["help/turing-test"]
+
+["help/your-email"]
+
+["label/24-hour-clock"]
+
+["label/access-to-sites"]
+
+["label/add-new"]
+  default = "เพิ่มใหม่"
+
+["label/all-sites"]
+
+["label/allow-visitor-counts"]
+
+["label/browser-stats"]
+  default = "สถิติเบราว์เซอร์"
+
+["label/campaigns"]
+
+["label/change-code"]
+
+["label/clear-pageviews"]
+
+["label/code"]
+
+["label/csv-compress-format"]
+
+["label/current-passwd"]
+
+["label/custom-domain"]
+
+["label/dashboard-allow-embed"]
+
+["label/dashboard-public"]
+
+["label/data-retention"]
+
+["label/date-fmt"]
+
+["label/datepicker"]
+
+["label/delete-account-confirmation"]
+
+["label/email"]
+
+["label/email-address"]
+
+["label/email-reports"]
+
+["label/export-from-date"]
+
+["label/fewer-numbers"]
+
+["label/for-following-countries"]
+
+["label/goatcounter-domain"]
+
+["label/ignore-ips"]
+
+["label/lang"]
+  default = "ภาษา"
+
+["label/language-stats"]
+  default = "สถิติภาษา"
+
+["label/loc-stats"]
+  default = "สถิติตำแหน่ง"
+
+["label/lock-setting"]
+
+["label/mark-current"]
+  default = "(ปัจจุบัน)"
+
+["label/match-case"]
+
+["label/match-title"]
+
+["label/merge-account-confirmation"]
+
+["label/merge-to"]
+
+["label/mfa-token"]
+
+["label/new-code"]
+
+["label/new-password"]
+
+["label/new-password-confirm"]
+
+["label/pagination-cursor"]
+
+["label/password"]
+  default = "รหัสผ่าน"
+
+["label/paths"]
+
+["label/public-anyone"]
+
+["label/public-private"]
+
+["label/public-token"]
+
+["label/secret"]
+
+["label/secret-access"]
+
+["label/secret-token"]
+
+["label/set-default"]
+
+["label/size-desktop"]
+  default = "หน้าจอคอมพิวเตอร์"
+
+["label/size-desktophd"]
+  default = "หน้าจอคอมพิวเตอร์ขนาดใหญ่กว่า HD"
+
+["label/size-phones"]
+  default = "โทรศัพท์"
+
+["label/size-stats"]
+  default = "สถิติขนาด"
+
+["label/size-tablets"]
+  default = "แท็ปเล็ตและแลปท็อปขนาดเล็ก"
+
+["label/system-stats"]
+  default = "สถิติระบบ"
+
+["label/theme"]
+
+["label/thousand-separator"]
+
+["label/timezone"]
+  default = "โซนเวลา"
+
+["label/topref"]
+
+["label/total-pageviews"]
+
+["label/turing-test"]
+
+["label/verifictation-token"]
+
+["label/week-start"]
+
+["label/your-email"]
+  default = "อีเมลของคุณ"
+
+["label/your-site"]
+  default = "เว็บไซต์ของคุณ"
+
+["label/zip-file"]
+
+["link/add-translation"]
+  default = "เพิ่มหรืออัปเดตการแปลภาษา"
+
+["link/api"]
+
+["link/api-docs"]
+
+["link/dashboard"]
+  default = "แดชบอร์ด"
+
+["link/generate-random"]
+
+["link/goto-path"]
+
+["link/import"]
+
+["link/manage-pageviews"]
+
+["link/merge-account"]
+
+["link/passwd-mfa"]
+
+["link/preferences"]
+  default = "กำหนดค่า"
+
+["link/rm-account"]
+  default = "ลบบัญชี"
+
+["link/set-from-browser"]
+
+["link/settings"]
+  default = "ตั้งค่า"
+
+["link/show-less"]
+
+["link/show-more"]
+  default = "ดูเพิ่มเติม"
+
+["link/sites"]
+
+["link/users"]
+
+["nav-bot/contact"]
+  default = "ติดต่อ"
+
+["nav-bot/contribute"]
+
+["nav-bot/docs"]
+  default = "เอกสาร"
+
+["nav-bot/home"]
+  default = "หน้าแรก"
+
+["nav-bot/src"]
+
+["nav-dash/back"]
+  default = "กลับ"
+
+["nav-dash/day"]
+  default = "วัน"
+
+["nav-dash/end-date"]
+
+["nav-dash/filter"]
+
+["nav-dash/filter-more-help"]
+
+["nav-dash/filter-tooltip"]
+
+["nav-dash/forward"]
+  default = "ถัดไป"
+
+["nav-dash/half-year"]
+  default = "ครึ่งปี"
+
+["nav-dash/hour"]
+
+["nav-dash/last"]
+
+["nav-dash/month"]
+  default = "เดือน"
+
+["nav-dash/quarter"]
+  default = "ไตรมาส"
+
+["nav-dash/start-date"]
+
+["nav-dash/view-by"]
+
+["nav-dash/week"]
+  default = "สัปดาห์"
+
+["nav-dash/year"]
+  default = "ปี"
+
+["nav-fash/filter-less-help"]
+
+["new-paren"]
+
+["no-title"]
+  default = "ไม่มีชื่อ"
+
+["notify/add-one-thing"]
+
+["notify/api-token-created"]
+
+["notify/api-token-removed"]
+
+["notify/disabled-multi-factor-auth"]
+
+["notify/email-already-verified"]
+
+["notify/export-started-in-background"]
+
+["notify/import-ga-okay"]
+
+["notify/import-started-in-background"]
+
+["notify/login-after-password-reset"]
+
+["notify/multi-factor-auth-enabled"]
+
+["notify/need-email-verification-for-api"]
+
+["notify/no-user-for-token"]
+
+["notify/not-found"]
+  default = "ไม่พบ"
+
+["notify/password-changed"]
+  default = "รหัสผ่านถูกเปลี่ยน"
+
+["notify/reset-to-default"]
+  default = "รีเซ็ตเป็นค่าเริ่มต้น"
+
+["notify/reset-user-sent"]
+
+["notify/restored-previously-deleted-site"]
+
+["notify/saved"]
+  default = "บันทึก!"
+
+["notify/sent-to-email"]
+
+["notify/settings-copied-to-site"]
+
+["notify/site-added"]
+
+["notify/site-removed"]
+
+["notify/started-background-process"]
+
+["notify/user-added"]
+
+["notify/user-removed"]
+
+["notify/users-edited"]
+
+["p/add-goatcounter-to-multiple-websites"]
+
+["p/add-multiple-accounts"]
+
+["p/additional-errors"]
+
+["p/all-sites"]
+
+["p/api-intro"]
+
+["p/change-code-request"]
+
+["p/change-email"]
+
+["p/collect-disabled"]
+
+["p/copy-settings-from-current-site"]
+
+["p/csv-file-format"]
+
+["p/delete-account"]
+
+["p/disable-mfa"]
+
+["p/enable-mfa"]
+
+["p/error"]
+
+["p/export-csv"]
+
+["p/export-from-date"]
+
+["p/export-process"]
+
+["p/have-mfa"]
+
+["p/import-ga"]
+
+["p/json-file-format"]
+
+["p/last-user"]
+
+["p/link-to-batch-rename"]
+
+["p/manage-batch-hits"]
+
+["p/manage-hits"]
+
+["p/merge-account"]
+
+["p/no-data"]
+
+["p/no-matches"]
+
+["p/notify-immediate-change"]
+
+["p/notify-pagination-cursor"]
+
+["p/notify-site-deletion"]
+
+["p/num-accounts"]
+
+["p/remove-site-confirm"]
+
+["p/remove-site-confirm-contact"]
+
+["p/remove-site-confirm-current"]
+
+["p/rm-hits-help"]
+
+["p/rm-pageview-match"]
+
+["p/setting-recovery-disabled-information"]
+
+["p/settings-all-sites"]
+
+["p/site-domain-link-to-page"]
+
+["p/text-data-retention"]
+
+["p/verify-email"]
+
+["page-ranking"]
+
+["scale-y"]
+
+["theme/dark"]
+
+["theme/light"]
+
+["theme/system"]
+
+["tooltip/change-period"]
+
+["top-nav/back"]
+  default = "กลับ"
+
+["top-nav/dashboard"]
+  default = "แดชบอร์ด"
+
+["top-nav/documentation"]
+
+["top-nav/need-js"]
+
+["top-nav/public-link"]
+
+["top-nav/public-time"]
+
+["top-nav/settings"]
+  default = "ตั้งค่า"
+
+["top-nav/sign-in"]
+  default = "เข้าสู่ระบบ"
+
+["top-nav/sign-out"]
+  default = "ออกจากระบบ"
+
+["top-nav/sites"]
+
+["unknown"]
+  default = "(ระบุไม่ได้)"
+
+["validate/bool"]
+
+["validate/color"]
+
+["validate/contains"]
+
+["validate/date"]
+
+["validate/domain"]
+
+["validate/email"]
+
+["validate/exclude"]
+
+["validate/hostname"]
+
+["validate/include"]
+
+["validate/int"]
+
+["validate/ip"]
+
+["validate/ipv4"]
+
+["validate/len-longer"]
+
+["validate/len-shorter"]
+
+["validate/need-one"]
+
+["validate/phone"]
+
+["validate/range-higher"]
+
+["validate/range-lower"]
+
+["validate/required"]
+
+["validate/url"]
+
+["validate/utf8"]
+
+["view not set"]
+
+["widget-setting/help/align"]
+
+["widget-setting/help/chart-style"]
+
+["widget-setting/help/no-events"]
+
+["widget-setting/help/page-size"]
+
+["widget-setting/help/ref-page-size"]
+
+["widget-setting/help/regions"]
+
+["widget-setting/label/align"]
+
+["widget-setting/label/chart-style"]
+  default = "รูปแบบชาร์ท"
+
+["widget-setting/label/no-events"]
+
+["widget-setting/label/page-size"]
+  default = "ขนาดเพจ"
+
+["widget-setting/label/ref-page-size"]
+
+["widget-setting/label/regions"]
+  default = "แสดงภูมิภาค"
+
+["widget-settings/bar-chart"]
+  default = "กราฟแท่ง"
+
+["widget-settings/line-chart"]
+  default = "กราฟเส้น"
+
+["widget-settings/text-chart"]
+
+["y-scale"]
