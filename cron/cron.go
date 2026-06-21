@@ -50,6 +50,21 @@ func SetPersistInterval(d time.Duration) {
 	persistInterval.Store(int64(d))
 }
 
+func jitter(p time.Duration) time.Duration {
+	if p > time.Minute {
+		m := p / 50
+		if p >= time.Hour*12 {
+			m = p / 100
+		}
+		rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
+		if rand.IntN(2) == 1 {
+			rnd = -rnd
+		}
+		return p + rnd
+	}
+	return p
+}
+
 // Start running tasks in the background.
 func Start(ctx context.Context) {
 	if started.Value() == 1 {
@@ -76,25 +91,13 @@ func Start(ctx context.Context) {
 
 			id := t.ID()
 			for {
+				var p time.Duration
 				if id == "persistAndStat" {
-					time.Sleep(time.Duration(persistInterval.Load()))
+					p = jitter(time.Duration(persistInterval.Load()))
 				} else {
-					p := t.Period
-					// Add some random jitter to prevent jobs from running at
-					// the same time.
-					if t.Period > time.Minute {
-						m := t.Period / 50
-						if t.Period >= time.Hour*12 {
-							m = t.Period / 100
-						}
-						rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
-						if rand.IntN(2) == 1 {
-							rnd = -rnd
-						}
-						p += rnd
-					}
-					time.Sleep(p)
+					p = jitter(t.Period)
 				}
+				time.Sleep(p)
 				if stopped.Value() == 1 {
 					return
 				}
