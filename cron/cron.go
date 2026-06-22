@@ -33,6 +33,7 @@ var Tasks = []Task{
 	{"send email reports", EmailReports, 1 * time.Hour},
 	{"cycle sessions", sessions, 1 * time.Minute},
 	{"persist hits", persistAndStat, time.Duration(persistInterval.Load())},
+	{"persist sessions", storeSessions, 1 * time.Minute},
 	{"vacuum filters", oldFilters, 1 * time.Hour},
 }
 
@@ -76,25 +77,35 @@ func Start(ctx context.Context) {
 
 			id := t.ID()
 			for {
+				var period time.Duration
 				if id == "persistAndStat" {
-					time.Sleep(time.Duration(persistInterval.Load()))
+					period = time.Duration(persistInterval.Load())
 				} else {
-					p := t.Period
-					// Add some random jitter to prevent jobs from running at
-					// the same time.
-					if t.Period > time.Minute {
-						m := t.Period / 50
-						if t.Period >= time.Hour*12 {
-							m = t.Period / 100
-						}
-						rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
-						if rand.IntN(2) == 1 {
-							rnd = -rnd
-						}
-						p += rnd
-					}
-					time.Sleep(p)
+					period = t.Period
 				}
+
+				// Add some random jitter to prevent jobs from running at
+				// the same time.
+				p := period
+				if period > time.Minute {
+					m := period / 50
+					if period >= time.Hour*12 {
+						m = period / 100
+					}
+					rnd := time.Duration(rand.Int64N(int64(m))).Round(time.Second)
+					if rand.IntN(2) == 1 {
+						rnd = -rnd
+					}
+					p += rnd
+				} else if period == time.Minute {
+					rnd := time.Duration(rand.Int64N(int64(10 * time.Second))).Round(time.Second)
+					if rand.IntN(2) == 1 {
+						rnd = -rnd
+					}
+					p += rnd
+				}
+				time.Sleep(p)
+
 				if stopped.Value() == 1 {
 					return
 				}
@@ -121,6 +132,7 @@ func TaskDataRetention() error  { return bgrun.RunTask("cron:dataRetention") }
 func TaskVacuumOldSites() error { return bgrun.RunTask("cron:vacuumDeleted") }
 func TaskACME() error           { return bgrun.RunTask("cron:renewACME") }
 func TaskSessions() error       { return bgrun.RunTask("cron:sessions") }
+func TaskStoreSessions() error  { return bgrun.RunTask("cron:storeSessions") }
 func TaskEmailReports() error   { return bgrun.RunTask("cron:emailReports") }
 func TaskPersistAndStat() error { return bgrun.RunTask("cron:persistAndStat") }
 func WaitOldExports()           { bgrun.Wait("cron:oldExports") }
@@ -128,5 +140,6 @@ func WaitDataRetention()        { bgrun.Wait("cron:dataRetention") }
 func WaitVacuumOldSites()       { bgrun.Wait("cron:vacuumDeleted") }
 func WaitACME()                 { bgrun.Wait("cron:renewACME") }
 func WaitSessions()             { bgrun.Wait("cron:sessions") }
+func WaitStoreSessions()        { bgrun.Wait("cron:storeSessions") }
 func WaitEmailReports()         { bgrun.Wait("cron:emailReports") }
 func WaitPersistAndStat()       { bgrun.Wait("cron:persistAndStat") }

@@ -256,3 +256,9 @@ func sessions(ctx context.Context) error {
 	goatcounter.Memstore.EvictSessions(ctx)
 	return nil
 }
+
+func storeSessions(ctx context.Context) error {
+	db := zdb.MustGetDB(ctx)
+	goatcounter.Memstore.StoreSessions(db)
+	return nil
+}
