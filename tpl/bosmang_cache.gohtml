@@ -1,0 +1,21 @@
+{{template "_backend_top.gohtml" .}}
+
+<style>
+table  { width:auto; }
+.col-n { text-align:right; }
+</style>
+
+<table>
+<thead><tr>
+	<th>Cache</th>
+	<th class="col-n">Num items</th>
+	<th class="col-n">Total memory usage</th>
+</tr></thead>
+<tbody>{{range $k, $v := .Cache}}<tr>
+	<td>{{$k}}</td>
+	<td class="col-n">{{$v.Num | number}}</td>
+	<td class="col-n">{{$v.Size | number}}K</td>
+</tr></tbody>{{end}}
+</table>
+
+{{template "_backend_bottom.gohtml" .}}

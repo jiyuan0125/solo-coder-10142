@@ -1,0 +1,77 @@
+{{template "_backend_top.gohtml" .}}
+{{template "_settings_nav.gohtml" .}}
+
+<h2>{{.T "header/sites|Sites"}}</h2>
+
+{{.T `p/add-goatcounter-to-multiple-websites|
+	<p>Add GoatCounter to multiple websites by creating new sites. All sites
+	will share the same users, and logins, but are otherwise completely
+	separate. The current site’s settings are copied on creation, but are
+	independent afterwards.</p>
+
+	<p>You can add as many as you want.</p>
+`}}
+
+{{if and (not .GoatcounterCom) .User.AccessSuperuser}}
+	<p>{{.T `p/add-multiple-accounts|
+		You can use the <code>goatcounter db create site</code> command from the CLI
+		to create multiple accounts. These will be entirely separate and won't share
+		users or anything else. For example:
+	`}}</p>
+
+	<pre>% goatcounter db create site -vhost=stats.example.com -email=me@example.com</pre>
+{{end}}
+
+<form method="post" action="{{.Base}}/settings/sites/add">
+	<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+	<table class="auto">
+		<thead><tr><th>{{if .GoatcounterCom}}{{.T "header/code|Code"}}{{else}}{{.T "header/domain|Domain"}}{{end}}</th><th></th></tr></thead>
+		<tbody>
+			{{range $s := .SubSites}}<tr>
+				{{if $.GoatcounterCom}}
+					<td><a href="//{{$s.Code}}.{{$.Domain}}">{{$s.Code}}</a></td>
+				{{else}}
+					<td><a href="{{$s.URL $.Context}}">{{$s.Domain $.Context}}</a></td>
+				{{end}}
+				<td>
+					<a href="{{$.Base}}/settings/sites/remove/{{$s.ID}}">{{$.T "button/delete|delete"}}</a>
+					{{if eq $s.ID $.Site.ID}}&nbsp;&nbsp;&nbsp;{{$.T "label/mark-current|(current)"}}{{end}}
+				</td>
+			</tr>{{end}}
+
+			<tr>
+				<td>
+					{{if $.GoatcounterCom}}
+						<input type="text" id="code" name="code" placeholder="{{.T "label/code|Code"}}" value="{{.NewSite.Code}}"><br>
+						{{validate "code" $.Validate}}
+						<span class="help">{{.T "help/code-access|You will access your site at https://<em>[my-code]</em>.%(domain)." .Domain }}</span>
+					{{else}}
+						<input type="text" id="cname" name="cname" placeholder="Domain"><br>
+						{{validate "cname" $.Validate}}
+						<span class="help">{{.T "help/domain-access|Domain to access GoatCounter from."}}</span>
+					{{end}}
+				</td>
+				<td><button type="submit">{{.T "button/add-new|Add new"}}</button></td>
+			</tr>
+	</tbody></table>
+</form>
+
+<h2>{{.T "header/copy-settings|Copy settings"}}</h2>
+<p>{{.T "p/copy-settings-from-current-site|Copy all settings from the current site except the domain name."}}</p>
+
+<p><strong>{{.T "p/text-data-retention|This includes the data retention and collection settings!"}}</strong></p>
+
+<form method="post" action="{{.Base}}/settings/sites/copy-settings">
+	<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+	{{range $s := .SubSites}}<tr>
+		{{if ne $s.ID $.Site.ID}}
+		<label><input type="checkbox" name="sites[]" value="{{$s.ID}}">
+			{{if $.GoatcounterCom}}{{$s.Code}}{{else}}{{$s.Domain $.Context}}{{end}}</label><br>
+		{{end}}
+	{{end}}
+	<br>
+	<label><input type="checkbox" name="allsites"> {{.T "label/all-sites|All sites"}}</label><br><br>
+	<button type="submit">{{.T "button/copy|Copy"}}</button>
+</form>
+
+{{template "_backend_bottom.gohtml" .}}

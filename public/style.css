@@ -1,0 +1,148 @@
+.page, .center { max-width: 60em; }
+hr             { margin: 1em 0; }
+u              { text-decoration: none; box-shadow: inset 0 -.175em yellow, inset 0 -.2em #eee; }
+
+.cbox          { box-shadow: 0 0 4px var(--box-shadow); background-color: var(--box-bg); color: var(--text); }
+
+footer         { line-height: 2.5em; padding: .5em; text-align: center;  justify-content: space-between; }
+footer a       { font-weight: bold; color: var(--text); margin: 0 .5em; }
+
+@media (max-width: 54em) {
+	footer span { display: none; }
+}
+@media (max-width: 44em) {
+	footer >div:first-child { border-bottom: 1px solid #aaa; }
+}
+
+.page { position: relative; }
+
+/*** Home page ***/
+.page-home          { padding: 0; box-shadow: none; background-color: transparent; }
+.page-home h1       { margin-top: 1em; font-size: 2em; }
+.page-home *:target { background-color: inherit; }
+.page-home h2       { border-bottom: 0; text-align: center; font-size: 2rem; margin-top: 5rem; }
+
+.hlink       { font-weight: bold; }
+.hlink:hover { text-decoration: none; background-color: #fffded; color: var(--text); }
+.hlink img   { vertical-align: middle; margin: 0 5px; height: 1.1em; }
+
+/*** Home top ***/
+#home-top        { padding: 0 1em; margin-bottom: 3rem; }
+
+/* Intro text */
+#home-intro        { text-align: center; max-width: 40em; margin: 0 auto; margin-bottom: 4em; }
+#home-intro strong { font-weight: normal; font-size: 1.8em; line-height: 1.5em; }
+#home-intro em     { box-shadow: inset 0 -.175em yellow, inset 0 -.2em #eee; }
+#home-intro a      { font-size: 1rem; margin-top: -2em; }
+#home-intro p      { text-align: center; }
+
+/* Login button */
+#home-login       { text-align: center; }
+#home-login .cbox { padding: 1em 3em; }
+#home-login p     { font-size: .8em; margin-top: 1.3em; }
+
+/* Live demo and screenshots */
+#home-screens     { text-align: center; margin-top: 1em; }
+#home-screens p   { width: 100%; margin-bottom: 3em; font-weight: bold; }
+#home-screens p a { padding: .3em 1em; border-bottom: 3px solid yellow; transition: color, border .2s; }
+#home-screens p a:hover { text-decoration: none; border-bottom: 3px solid #6491ff; }
+/*
+#home-screens a { box-shadow: inset 0 -.175em yellow, inset 0 -.2em #eee; }
+*/
+
+#home-screens img     { box-shadow: 0 0 6px rgba(0,0,0,.2); }
+@media (min-width: 45rem) {
+	#home-screens            { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; }
+	#home-screens figure     { width: 32%; }
+	#home-screens img        { cursor: pointer; }
+	#home-screens figcaption { margin-bottom: .4em; }
+}
+@media (max-width: 45rem) {
+	#home-screens figure     { margin-bottom: 1em; }
+	#home-screens figcaption { font-weight: bold; }
+}
+
+img.imgzoom-loading { cursor: wait !important; }
+.imgzoom-large { cursor: pointer; box-shadow: 0 0 8px rgba(0, 0, 0, .3); transition: all .4s; }
+
+/*** Home features ***/
+#features          { margin-top: 3rem; }
+#home-features div { display: flex; justify-content: space-between; }
+#home-features p   { width: 49%; padding: .5em 1em; background-color: #fff; box-shadow: 0 0 6px rgba(0,0,0,.2); }
+#home-features div:first-child p { margin-top: 0; }
+#home-features strong { box-shadow: inset 0 -.175em yellow, inset 0 -.2em #eee; }
+#home-features code   { font-size: 10px; white-space: pre-wrap; }
+
+@media (max-width: 45rem) {
+	#home-features div { flex-wrap: wrap; }
+	#home-features p   { width: 100%; margin-top: .5em; }
+	#home-features div:first-child p { margin-top: .5em; }
+}
+
+
+/*** Signup page ******/
+#signup-intro {
+	text-align: center;
+	font-size: 1em;
+}
+#signup-form {
+	background-color: #f7f7f7;
+	padding: 1em;
+	box-shadow: 0 0 4px var(--box-shadow);
+}
+
+#signup-form fieldset.two {
+	margin: 0;
+	padding: 0;
+	border: none;
+	margin-bottom: 1em;
+}
+@media (min-width: 45rem) {
+	/* Extra div needed because Chrome doesn't support flexbox on fieldsets :-/ */
+	#signup-form fieldset.two > div       { display: flex; justify-content: space-between; }
+	#signup-form fieldset.two > div > div { width: 50%; }
+}
+
+form.vertical .err  { color: red; display: block; }
+form.vertical .help { font-size: 14px; margin-bottom: 1.2em; }
+
+/*** Help page ***/
+dt         { font-weight: bold; margin-top: 1em; }
+.flash     { margin-bottom: 1em; padding: 10px; text-align: center; border-radius: 2px; border: 2px solid var(--bg); }
+.flash p   { max-width: none !important; }
+.flash pre { text-align: left; margin: 0 auto; display: inline-block; }
+.flash-i   { background-color: var(--info-bg); border-color: var(--info-border); }
+.flash-e   { background-color: var(--error-bg); border-color: var(--error-border); }
+
+/*** Documents ***/
+#docs-list    { text-align: center; }
+#docs-list ul { list-style: none; margin: 0; padding: 0; height: 4em;
+	            display: flex; flex-direction: column; flex-wrap: wrap; justify-content: space-between; }
+@media (max-width: 35rem) {
+	#docs-list ul { height: auto; }
+	#docs-list li { margin: .5em 0; }
+}
+
+/* Force inputs to be 16px, so that iPhone won't zoom on select, which is
+ * super annoying and 100% pointless.
+ * https://stackoverflow.com/a/16255670/660921 */
+@supports (-webkit-overflow-scrolling: touch) {
+	input, select, textarea { font-size: 16px !important; }
+}
+
+/*** Contact form ***/
+.contact-form          { display: block; max-width: 40em; padding: 1rem; padding-top: 0; margin-left: 3em;
+						 background-color: #f9f9f9; box-shadow: 0 0 6px rgba(0,0,0,.2); }
+.contact-form strong   { margin-bottom: .5em; }
+.contact-form span     { color: #555; font-size: .9rem; }
+.contact-form >div     { max-width: 40em; }
+.contact-form .f       { display: flex; justify-content: space-between; margin-bottom: 1em; }
+.contact-form button   { margin: 0; margin-top: 1em; }
+.contact-form textarea { font-family: monospace; }
+.contact-form .err     { display: block; color: red; }
+
+/* Work around Firefox mobile not displaying validation errors :-/ This at least
+ * gives *some* hint something has gone wrong. This is so broken that I'm not
+ * going to bother writing a JS thing.
+ * https://github.com/arp242/goatcounter/issues/529 */
+input:user-invalid { outline: 1px solid #f00 !important; box-shadow: 0 0 .2em #f00 !important; background-color: #feeaea; }

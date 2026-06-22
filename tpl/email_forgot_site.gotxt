@@ -1,0 +1,8 @@
+{{template "_email_top.gotxt" .}}
+You requested a list of GoatCounter sites associated with ‘{{.Email}}’:
+{{range $s := .Sites}}
+- {{$s.URL $.Context}}
+{{else}}
+There are no GoatCounter domains associated with this email.
+{{end}}
+{{template "_email_bottom.gotxt" .}}

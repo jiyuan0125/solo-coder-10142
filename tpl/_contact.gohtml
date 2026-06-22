@@ -1,0 +1,47 @@
+<ul>
+	<li>Open a <a href="https://github.com/arp242/goatcounter/issues/new">GitHub
+		issue</a>. It’s fine to use this for support requests or general
+		questions, as GitHub issues are public and the answers may be useful for
+		others in the future.</li>
+
+	<li>Email:
+		<a href="mailto:support@goatcounter.com">support@goatcounter.com</a>.</li>
+</ul>
+
+<form method="post" action="{{.Base}}/contact" class="contact-form">
+	<input type="hidden" name="return" value="{{if .a}}{{.a.Return}}{{else}}{{.r}}{{end}}">
+
+	<strong>Send message</strong>
+	<div class="f">
+		<div>
+			<label for="email">Email</label><br>
+			<input type="text" id="email" name="email" {{if .a}}value="{{.a.Email}}"{{end}}><br>
+			{{if .v}}{{validate "email" .v}}{{end}}
+			<span>Make sure this is correct</span>
+		</div>
+
+		<div>
+			<label for="turing">Enter 9 here</label><br>
+			<input type="text" id="turing" name="turing" {{if .a}}value="{{.a.Turing}}"{{end}}><br>
+			{{if .v}}{{validate "turing" .v}}{{end}}
+			<span>Just to verify that you’re human</span>
+		</div>
+	</div>
+
+	<div>
+		<label for="message">Your message</label><br>
+		<textarea id="message" name="message">{{if .a}}{{.a.Message}}{{end}}</textarea><br>
+		{{if .v}}{{validate "message" .v}}{{end}}
+		<button type="submit">Send</button>
+	</div>
+
+	{{if .v}}
+		{{if has_errors .v}}
+			<div class="flash flash-e"
+				style="position: fixed; bottom: 0; right: .5em; min-width: 20em; z-index: 5; text-align: left;">
+			{{.T "p/additional-errors|Additional errors"}}:{{.v.HTML}}</div>
+		{{end}}
+	{{end}}
+
+	<div id="scroll-target"></div>
+</form>

@@ -1,0 +1,5 @@
+# Mark as generated so it won't show up in diffs etc.
+/go.sum       linguist-generated=true
+/tpl/api.html linguist-generated=true
+/tpl/api.json linguist-generated=true
+/refspam.go   linguist-generated=true

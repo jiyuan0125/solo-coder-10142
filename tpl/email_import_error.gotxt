@@ -1,0 +1,6 @@
+{{template "_email_top.gotxt" .}}
+There was an error importing your data :-(
+
+The reported error: {{.Error}}
+
+{{template "_email_bottom.gotxt" .}}

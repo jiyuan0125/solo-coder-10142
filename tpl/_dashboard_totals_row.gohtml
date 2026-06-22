@@ -1,0 +1,15 @@
+<tbody><tr id="TOTAL ">
+	{{if .Align}}<td class="col-count"></td><td class="col-path hide-mobile"></td>{{end}}
+	<td>
+		<div class="chart chart-{{$.Style}} widget-{{if $.Loaded}}loaded{{else}}loading{{end}}" data-max="{{.Max}}" data-stats="{{.Page.Stats | json}}" data-group="{{.Group}}">
+			{{if .Loaded}}
+				{{if not $.User.Settings.FewerNumbers}}
+					<span class="chart-right"><small class="scale" title="Y-axis scale">{{nformat .Max $.User}}</small></span>
+				{{end}}
+				<canvas></canvas>
+			{{else}}
+				{{t $.Context "dashboard/loading|Loading…"}}
+			{{end}}
+		</div>
+	</td>
+</tr></tbody>

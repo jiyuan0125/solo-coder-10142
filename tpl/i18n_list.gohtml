@@ -1,0 +1,46 @@
+{{- template "_backend_top.gohtml" . -}}
+<link rel="stylesheet" href="{{.Static}}/i18n.css?v={{.Version}}">
+
+<h1>GoatCounter translations</h1>
+<h2>Instructions</h2>
+<p>Anyone can help translate GoatCounter. To prevent abuse edited translations
+won't show up in the UI until it's approved. You can also directly edit the TOML
+files from git (<a href="https://github.com/arp242/goatcounter/tree/main/i18n")>see the
+<code>i18n/</code> directory</a>).</p>
+
+<p>There are {{.TotalStrings}} translatable strings in total.</p>
+
+<h2>Edit translations</h2>
+<table id="i18n-list">
+	<thead><tr>
+		<th>File</th>
+		<th>Completed</th>
+		<th>Number of strings</th>
+		<th>Modified</th>
+	</tr></thead>
+<tbody>
+	{{range $f := .Files}}
+		<tr>
+			<td><a href="{{$.Base}}/i18n/{{$f.Name}}">{{$f.Name}}</a></td>
+			<td>{{printf "%.0f" (percentage $f.Num $.TotalStrings)}}%</td>
+			<td>{{$f.Num}} strings</td>
+			<td>{{if $f.Mod}}yes{{end}}</td>
+		</tr>
+	{{end}}
+</tbody>
+</table>
+
+<h2>Create new</h2>
+<form method="post" action="{{.Base}}/i18n" class="vertical">
+	<input type="hidden" name="csrf" value="{{.User.CSRFToken}}">
+
+	<label for="language">Language</label>
+	<input type="text" name="language" id="language">
+	<span>As country code (i.e. 'de' for Germany) with optional region tag (i.e. 'de-DE' or 'de-AT' for Germany or Austria</span>
+	<br><br>
+	<button>Create</button>
+</form>
+
+<script crossorigin="anonymous" src="{{.Static}}/jquery.js?v={{.Version}}"></script>
+<script crossorigin="anonymous" src="{{.Static}}/i18n.js?v={{.Version}}"></script>
+{{- template "_backend_bottom.gohtml" . }}
